@@ -1,0 +1,4 @@
+inherit_from: http://www.example.com/rubocop.yml
+
+Style/StringLiterals:
+  EnforcedStyled: double_quotes
