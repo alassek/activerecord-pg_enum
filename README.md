@@ -1,4 +1,4 @@
-# ActiveRecord::PGEnum
+# ActiveRecord::PGEnum [![Build Status](https://travis-ci.com/getflywheel/activerecord-pg_enum.svg?branch=master)](https://travis-ci.com/getflywheel/activerecord-pg_enum)
 
 This gem is a small monkeypatch to ActiveRecord so that your `schema.rb` file can support PostgreSQL's native enumerated types.
 
