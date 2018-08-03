@@ -2,6 +2,10 @@ require "bundler/setup"
 require "pry"
 require "active_record/pg_enum"
 
+def spec_root
+  Pathname.new(File.expand_path(__dir__))
+end
+
 require_relative "support/connection"
 require_relative "support/table_helpers"
 require_relative "support/rails_env"
