@@ -1,5 +1,12 @@
 sudo: false
 language: ruby
 rvm:
-  - 2.2.3
+  - 2.5
+services:
+  - postgresql
 before_install: gem install bundler -v 1.15.4
+before_script:
+  - "rake spec:setup"
+env:
+  global:
+    - TEST_USER=postgres
