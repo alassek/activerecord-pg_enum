@@ -1,23 +1,39 @@
 require "spec_helper"
 
 RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
-  let(:spec_root) { Pathname.new(File.expand_path(__dir__)) / ".." / ".." }
-  let(:schema_file) { spec_root / "fixtures" / "schema.rb" }
+  subject { ActiveRecord::MigrationContext.new(spec_root / "migrations") }
 
-  def load_schema
-    ActiveRecord::Tasks::DatabaseTasks.load_schema db_config, :ruby, schema_file
+  context "up" do
+    before :each do
+      execute "DROP TABLE IF EXISTS schema_migrations"
+      execute "DROP TYPE IF EXISTS status_type"
+    end
+
+    after :each do
+      execute "DROP TABLE IF EXISTS schema_migrations"
+      execute "DROP TYPE IF EXISTS status_type"
+    end
+
+    it "creates a new enum" do
+      expect(subject.current_version).to eq 0
+      expect { subject.up }.to_not raise_error
+      expect(subject.current_version).to eq 1
+      expect(connection.enum_types).to include(["status_type", ["active", "archived"]])
+    end
   end
 
-  it "loads a schema file with create_enum successfully" do
-    connection.execute "DROP TABLE IF EXISTS test_table"
-    connection.execute "DROP TYPE IF EXISTS foo_type"
+  context "down" do
+    before :each do
+      execute "DROP TYPE IF EXISTS status_type"
+      execute "CREATE TYPE status_type AS ENUM ('active', 'archived')"
+      ActiveRecord::SchemaMigration.tap(&:create_table).find_or_create_by(version: 1)
+    end
 
-    expect(connection.enum_types).to be_empty
-    expect(connection.data_sources).to_not include("test_table")
-
-    expect { load_schema }.to_not raise_error
-
-    expect(connection.enum_types).to match_array [["foo_type", ["bar", "baz"]]]
-    expect(connection.data_sources).to include("test_table")
+    it "drops the enum type" do
+      expect(subject.current_version).to eq 1
+      expect { subject.down(0) }.to_not raise_error
+      expect(subject.current_version).to eq 0
+      expect(connection.enum_types).to_not include(["status_type", ["active", "archived"]])
+    end
   end
 end
