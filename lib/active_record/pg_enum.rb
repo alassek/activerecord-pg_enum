@@ -8,6 +8,7 @@ ActiveSupport.on_load(:active_record) do
   require "active_record/pg_enum/postgresql_adapter"
   require "active_record/pg_enum/schema_dumper"
   require "active_record/pg_enum/schema_statements"
+  require "active_record/pg_enum/helper"
 
   ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::NATIVE_DATABASE_TYPES.merge!(enum: { name: "enum" })
 
