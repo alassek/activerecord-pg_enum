@@ -21,20 +21,10 @@ module ActiveRecord
       end
 
       def column_spec(column)
-        type, spec = super
-
         if column.type == :enum
-          type      = "column"
-          enum_type = spec.delete(:enum_type)
-          spec      = [enum_type.inspect, spec]
-        end
-
-        [type, spec]
-      end
-
-      def prepare_column_options(column)
-        super.tap do |spec|
-          spec[:enum_type] = column.sql_type if column.type == :enum
+          ["column", [column.sql_type.inspect, prepare_column_options(column)]]
+        else
+          super
         end
       end
 
