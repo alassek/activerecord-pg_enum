@@ -5,18 +5,18 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
 
   context "up" do
     before :each do
-      execute "DROP TABLE IF EXISTS schema_migrations"
+      ActiveRecord::SchemaMigration.drop_table
       execute "DROP TYPE IF EXISTS status_type"
     end
 
     after :each do
-      execute "DROP TABLE IF EXISTS schema_migrations"
+      ActiveRecord::SchemaMigration.drop_table
       execute "DROP TYPE IF EXISTS status_type"
     end
 
     it "creates a new enum" do
       expect(subject.current_version).to eq 0
-      expect { subject.up }.to_not raise_error
+      expect { subject.up(1) }.to_not raise_error
       expect(subject.current_version).to eq 1
       expect(connection.enum_types).to include("status_type" => %w[active archived])
     end
@@ -36,6 +36,4 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
       expect(connection.enum_types).to_not include("status_type" => %w[active archived])
     end
   end
-
-
 end
