@@ -18,7 +18,7 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
       expect(subject.current_version).to eq 0
       expect { subject.up }.to_not raise_error
       expect(subject.current_version).to eq 1
-      expect(connection.enum_types).to include(["status_type", ["active", "archived"]])
+      expect(connection.enum_types).to include("status_type" => %w[active archived])
     end
   end
 
@@ -33,7 +33,9 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
       expect(subject.current_version).to eq 1
       expect { subject.down(0) }.to_not raise_error
       expect(subject.current_version).to eq 0
-      expect(connection.enum_types).to_not include(["status_type", ["active", "archived"]])
+      expect(connection.enum_types).to_not include("status_type" => %w[active archived])
     end
   end
+
+
 end

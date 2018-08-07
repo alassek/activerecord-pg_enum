@@ -16,7 +16,7 @@ RSpec.describe ActiveRecord::Tasks::DatabaseTasks do
 
     expect { load_schema }.to_not raise_error
 
-    expect(connection.enum_types).to match_array [["foo_type", ["bar", "baz"]]]
+    expect(connection.enum_types).to include({ "foo_type" => %w[bar baz] })
     expect(connection.data_sources).to include("test_table")
   end
 end

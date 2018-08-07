@@ -11,8 +11,9 @@ module ActiveRecord
           GROUP BY enum_name
         SQL
 
-        res.map do |(name, values)|
-          [name, values.split(" ")]
+        res.inject({}) do |memo, (name, values)|
+          memo[name] = values.split(" ")
+          memo
         end
       end
     end

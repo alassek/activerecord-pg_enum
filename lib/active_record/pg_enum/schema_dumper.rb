@@ -13,8 +13,8 @@ module ActiveRecord
 
         stream.puts "  # These are custom enum types that must be created before they can be used in the schema definition"
 
-        enum_types.each do |enum_type|
-          stream.puts %Q{  create_enum "#{enum_type.first}", "#{enum_type.second.join("\", \"")}"}
+        enum_types.each do |name, definition|
+          stream.puts %Q{  create_enum "#{name}", "#{definition.join("\", \"")}"}
         end
 
         stream.puts
