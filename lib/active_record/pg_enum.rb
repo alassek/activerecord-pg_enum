@@ -5,6 +5,7 @@ require "active_record/connection_adapters/postgresql_adapter"
 require "active_support/lazy_load_hooks"
 
 ActiveSupport.on_load(:active_record) do
+  require "active_record/pg_enum/command_recorder"
   require "active_record/pg_enum/postgresql_adapter"
   require "active_record/pg_enum/schema_dumper"
   require "active_record/pg_enum/schema_statements"
@@ -16,4 +17,5 @@ ActiveSupport.on_load(:active_record) do
 
   ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.include ActiveRecord::PGEnum::PostgreSQLAdapter
   ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.include ActiveRecord::PGEnum::SchemaStatements
+  ActiveRecord::Migration::CommandRecorder.include ActiveRecord::PGEnum::CommandRecorder
 end

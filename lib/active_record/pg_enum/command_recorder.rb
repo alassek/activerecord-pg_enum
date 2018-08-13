@@ -1,0 +1,48 @@
+module ActiveRecord
+  module PGEnum
+    # ActiveRecord::Migration::CommandRecorder is a class used by reversible migrations.
+    # It captures the forward migration commands and translates them into their inverse
+    # by way of some simple metaprogramming.
+    #
+    # The Migrator class uses CommandRecorder during the reverse migration instead of
+    # the connection object. Forward migration calls are translated to their inverse
+    # where possible, and then forwarded to the connetion. Irreversible migrations
+    # raise an exception.
+    #
+    # Known schema statement methods are metaprogrammed into an inverse method like so:
+    #
+    #   create_table => invert_create_table
+    #
+    # which returns:
+    #
+    #   [:drop_table, args.first]
+    module CommandRecorder
+      def create_enum(*args, &block)
+        record(:create_enum, args, &block)
+      end
+
+      def drop_enum(*args, &block)
+        record(:drop_enum, args, &block)
+      end
+
+      def add_enum_value(*args, &block)
+        record(:add_enum_value, args, &block)
+      end
+
+      private
+
+      def invert_create_enum(args)
+        [:drop_enum, args]
+      end
+
+      def invert_drop_enum(args)
+        raise ActiveRecord::IrreversibleMigration, "drop_enum is only reversible if given a list of values" unless args.length > 1
+        [:create_enum, args]
+      end
+
+      def invert_add_enum_value(args)
+        raise ActiveRecord::IrreversibleMigration, "ENUM values cannot be removed once added. Drop and Replace it instead at your own risk."
+      end
+    end
+  end
+end

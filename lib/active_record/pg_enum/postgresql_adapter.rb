@@ -1,6 +1,11 @@
 module ActiveRecord
   module PGEnum
     module PostgreSQLAdapter
+      # Helper method used by the monkeypatch internals. Provides a hash of ENUM types as they exist currently.
+      #
+      # Example:
+      #
+      #   { "foo_type" => ["foo", "bar", "baz"] }
       def enum_types
         res = exec_query(<<-SQL.strip_heredoc, "SCHEMA").cast_values
           SELECT t.typname AS enum_name, string_agg(e.enumlabel, ' ' ORDER BY e.enumsortorder) AS enum_value

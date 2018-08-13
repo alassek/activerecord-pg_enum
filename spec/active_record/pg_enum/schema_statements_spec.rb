@@ -1,9 +1,9 @@
 require "spec_helper"
 
 RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
-  subject { ActiveRecord::MigrationContext.new(spec_root / "migrations") }
+  subject { ActiveRecord::MigrationContext.new(spec_root / "migrations" / "schema_statements_spec") }
 
-  context "up" do
+  context "create_enum" do
     before :each do
       ActiveRecord::SchemaMigration.drop_table
       execute "DROP TYPE IF EXISTS status_type"
@@ -22,7 +22,7 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
     end
   end
 
-  context "down" do
+  context "drop_enum" do
     before :each do
       execute "DROP TYPE IF EXISTS status_type"
       execute "CREATE TYPE status_type AS ENUM ('active', 'archived')"
