@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 0) do
   enable_extension "plpgsql"
 
   # These are custom enum types that must be created before they can be used in the schema definition
-  create_enum "foo_type", "bar", "baz"
+  create_enum "foo_type", %w[bar baz]
 
   create_table "test_table", id: :serial, force: :cascade do |t|
     t.column "foo", "foo_type", null: false

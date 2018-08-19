@@ -7,7 +7,7 @@ RSpec.describe ActiveRecord::ConnectionAdapters::PostgreSQL::SchemaDumper do
   before(:each) { subject.rewind }
 
   it "contains foo_type in the dump file" do
-    expect(subject.string).to include %Q{create_enum "foo_type", "bar", "baz"}
+    expect(subject.string).to include %Q{create_enum "foo_type", %w[bar baz]}
   end
 
   it "places create_enum after enable_extension and before create_table" do

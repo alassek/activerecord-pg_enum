@@ -2,6 +2,12 @@
 
 This gem is a small monkeypatch to ActiveRecord so that your `schema.rb` file can support PostgreSQL's native enumerated types.
 
+This will allow you to use enum columns in your database without replacing `schema.rb` with `structure.sql`.
+
+## Version support
+
+Currently only Rails 5.2 is supported. Support for previous versions going back to 4.1 are planned.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -20,7 +26,57 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Migrations
+
+Defining a new ENUM
+
+```ruby
+class AddContactMethodType < ActiveRecord::Migration[5.2]
+  def up
+    create_enum "contact_method_type", %w[Email Phone]
+  end
+
+  def down
+    drop_enum "contact_method_type"
+  end
+end
+```
+
+Adding a value to an existing ENUM
+
+```ruby
+class AddSMSToContactMethodType < ActiveRecord::Migration[5.2]
+  def up
+    add_enum_value "contact_method_type", "SMS", before: "Phone"
+  end
+
+  def down
+    raise ActiveRecord::IrreversibleMigration
+  end
+end
+```
+
+### Helper Methods
+
+```ruby
+class ContactInfo < ActiveRecord::Base
+  include ActiveRecord::PGEnum::Helper
+
+  pg_enum contact_method: %w[Email SMS Phone]
+end
+```
+
+`pg_enum` is a wrapper around the official `enum` method that converts array syntax into strings. The above example is equivalent to:
+
+```ruby
+class ContactInfo < ActiveRecord::Base
+  include ActiveRecord::PGEnum::Helper
+
+  enum contact_method: { Email: "Email", SMS: "SMS", Phone: "Phone" }
+end
+```
+
+There's no technical reason why you couldn't detect enum columns at startup time and automatically do this wireup, but I feel that the benefit of self-documenting outweighs the convenience.
 
 ## Development
 

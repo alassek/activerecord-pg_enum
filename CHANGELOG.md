@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.2.0] - 2018-08-18
+### Changed
+- Change API of `create_enum` to take two arguments instead, the name and an array of values
+
 ## [0.1.1] - 2018-08-14
 - Bump Ruby requirement to 2.2.2 (for Rails 5.2) until earlier framework versions are supported.
 - `enum_types` are listed in alphabetical order

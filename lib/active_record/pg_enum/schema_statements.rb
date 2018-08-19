@@ -6,12 +6,12 @@ module ActiveRecord
       # Example:
       #
       #   create_enum("foo_type", "foo", "bar", "baz")
-      def create_enum(name, *values)
-        execute "CREATE TYPE #{name} AS ENUM (#{values.map { |v| "'#{v}'" }.join(", ")})"
+      def create_enum(name, values)
+        execute "CREATE TYPE #{name} AS ENUM (#{Array(values).map { |v| "'#{v}'" }.join(", ")})"
       end
 
       # Drop an ENUM type from the database.
-      def drop_enum(name, *values_for_revert)
+      def drop_enum(name, values_for_revert = nil)
         execute "DROP TYPE #{name}"
       end
 
