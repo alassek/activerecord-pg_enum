@@ -1,9 +1,12 @@
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
+require "appraisal"
 
-RSpec::Core::RakeTask.new(:spec)
-
-task :default => :spec
+if !ENV["APPRAISAL_INITIALIZED"] && !ENV["TRAVIS"]
+  task :default => :appraisal
+else
+  task :default => :spec
+end
 
 task :connection do
   require "active_record"
@@ -16,6 +19,8 @@ task :connection do
 end
 
 namespace :spec do
+  RSpec::Core::RakeTask.new(:run)
+
   desc "Setup the Database for testing"
   task setup: [:connection] do
     ActiveRecord::Base.connection_pool.with_connection do |conn|
@@ -30,3 +35,5 @@ namespace :spec do
     end
   end
 end
+
+task spec: %w[spec:setup spec:run spec:teardown]
