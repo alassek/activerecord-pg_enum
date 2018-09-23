@@ -1,6 +1,7 @@
 require "bundler/setup"
 require "pry"
 require "active_record/pg_enum"
+require "active_support/core_ext/string/strip"
 
 def spec_root
   Pathname.new(File.expand_path(__dir__))
@@ -44,6 +45,23 @@ RSpec.configure do |config|
     ActiveRecord::Base.connection_pool.with_connection do |conn|
       conn.execute %Q{DROP TABLE test_table}
       conn.execute %Q{DROP TYPE foo_type}
+    end
+  end
+
+  # Create a metadata syntax for defining a version spec
+  #
+  # Example
+  #
+  #   RSpec.describe "Subject", version: [:>=, "6.0.0"]
+  #   Will only run the spec if ActiveRecord is >= 6.0.0
+  config.around(:each) do |example|
+    if (version = example.metadata[:version])
+      op, spec = version
+      current  = Gem.loaded_specs["activerecord"].version
+
+      example.run if current.send(op, Gem::Version.new(spec))
+    else
+      example.run
     end
   end
 end
