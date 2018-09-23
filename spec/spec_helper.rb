@@ -10,6 +10,7 @@ end
 require_relative "support/connection"
 require_relative "support/table_helpers"
 require_relative "support/rails_env"
+require_relative "support/migration_context"
 
 # Normally this would be run by Rails when it boots
 ActiveSupport.run_load_hooks(:active_record, ActiveRecord::Base)
@@ -18,6 +19,7 @@ ActiveRecord::Migration.verbose = false
 
 RSpec.configure do |config|
   config.include TableHelpers
+  config.include MigrationContext
 
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"

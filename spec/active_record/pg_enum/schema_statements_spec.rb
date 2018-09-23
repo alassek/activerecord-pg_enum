@@ -1,7 +1,7 @@
 require "spec_helper"
 
 RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
-  subject { ActiveRecord::MigrationContext.new(spec_root / "migrations" / "schema_statements_spec") }
+  let(:path) { spec_root / "migrations" / "schema_statements_spec" }
 
   context "create_enum" do
     before :each do
@@ -15,10 +15,12 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
     end
 
     it "creates a new enum" do
-      expect(subject.current_version).to eq 0
-      expect { subject.up(1) }.to_not raise_error
-      expect(subject.current_version).to eq 1
-      expect(connection.enum_types).to include("status_type" => %w[active archived])
+      with_migrator(path) do |subject|
+        expect(subject.current_version).to eq 0
+        expect { subject.up(1) }.to_not raise_error
+        expect(subject.current_version).to eq 1
+        expect(connection.enum_types).to include("status_type" => %w[active archived])
+      end
     end
   end
 
@@ -30,10 +32,12 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
     end
 
     it "drops the enum type" do
-      expect(subject.current_version).to eq 1
-      expect { subject.down(0) }.to_not raise_error
-      expect(subject.current_version).to eq 0
-      expect(connection.enum_types).to_not include("status_type" => %w[active archived])
+      with_migrator(path) do |subject|
+        expect(subject.current_version).to eq 1
+        expect { subject.down(0) }.to_not raise_error
+        expect(subject.current_version).to eq 0
+        expect(connection.enum_types).to_not include("status_type" => %w[active archived])
+      end
     end
   end
 end
