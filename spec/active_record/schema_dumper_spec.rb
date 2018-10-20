@@ -1,6 +1,6 @@
 require "spec_helper"
 
-RSpec.describe "ActiveRecord::ConnectionAdapters::PostgreSQL::SchemaDumper", version: [:>=, "5.2.0"] do
+RSpec.describe "ActiveRecord::ConnectionAdapters::PostgreSQL::SchemaDumper", version: "~> 5.2" do
   let(:described_class) { ActiveRecord::ConnectionAdapters::PostgreSQL::SchemaDumper }
   subject { StringIO.new }
 

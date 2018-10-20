@@ -11,6 +11,7 @@ require_relative "support/connection"
 require_relative "support/table_helpers"
 require_relative "support/rails_env"
 require_relative "support/migration_context"
+require_relative "support/version_matcher"
 
 # Normally this would be run by Rails when it boots
 ActiveSupport.run_load_hooks(:active_record, ActiveRecord::Base)
@@ -54,16 +55,9 @@ RSpec.configure do |config|
   #
   # Example
   #
-  #   RSpec.describe "Subject", version: [:>=, "6.0.0"]
+  #   RSpec.describe "Subject", version: ">= 6.0.0"
   #   Will only run the spec if ActiveRecord is >= 6.0.0
   config.around(:each) do |example|
-    if (version = example.metadata[:version])
-      op, spec = version
-      current  = Gem.loaded_specs["activerecord"].version
-
-      example.run if current.send(op, Gem::Version.new(spec))
-    else
-      example.run
-    end
+    example.run if VersionMatcher.new("activerecord").matches?(example)
   end
 end
