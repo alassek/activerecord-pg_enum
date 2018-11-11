@@ -1,11 +1,9 @@
 require "spec_helper"
 
 RSpec.describe "add_enum_value" do
-  before :each do
+  around :each do |example|
     execute "CREATE TYPE another_test_type AS ENUM ('foo', 'bar')"
-  end
-
-  after :each do
+    example.run
     execute "DROP TYPE another_test_type"
   end
 
@@ -42,14 +40,20 @@ RSpec.describe "add_enum_value" do
     end
   end
 
-  describe "migration" do
-    subject { ActiveRecord::MigrationContext.new(spec_root / "migrations" / "add_enum_value_spec") }
+  describe "migration", version: "~> 5.2" do
+    let(:path) { spec_root / "migrations" / "add_enum_value_spec" }
 
-    before :each do
-      ActiveRecord::SchemaMigration.tap(&:create_table).find_or_create_by(version: 1)
+    class AddEnumValue < ActiveRecord::Migration[5.2]
+      disable_ddl_transaction!
+
+      def change
+        add_enum_value "another_test_type", "baz", after: "bar"
+      end
     end
 
-    after :each do
+    around :each do |example|
+      ActiveRecord::SchemaMigration.tap(&:create_table).find_or_create_by(version: 1)
+      example.run
       ActiveRecord::SchemaMigration.where(version: 2).delete_all
     end
 
@@ -58,16 +62,20 @@ RSpec.describe "add_enum_value" do
     end
 
     it "supports change in the forward direction" do
-      expect { subject.up(2) }.to change(subject, :current_version).from(1).to(2)
-      expect(definition).to eq %w[foo bar baz]
+      with_migrator(path) do |subject|
+        expect { subject.up(2) }.to change(subject, :current_version).from(1).to(2)
+        expect(definition).to eq %w[foo bar baz]
+      end
     end
 
     it "raises an IrreversibleMigration if rolled back" do
       execute "ALTER TYPE another_test_type ADD VALUE 'baz'"
       ActiveRecord::SchemaMigration.find_or_create_by(version: 2)
 
-      # ActiveRecord::Migrator traps IrreversibleMigration and reraises a StandardError
-      expect { subject.down(1) }.to raise_error(StandardError)
+      with_migrator(path) do |subject|
+        # ActiveRecord::Migrator traps IrreversibleMigration and reraises a StandardError
+        expect { subject.down(1) }.to raise_error(StandardError)
+      end
     end
   end
 end
