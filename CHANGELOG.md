@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.0] - 2019-03-03
+- Support for 5.0 and 5.1
+- Change travis config to test against oldest supported version of ruby
+
+## [0.2.1] - 2019-02-22
+- Fixed a bug in the `SchemaDumper` output
+
 ## [0.2.0] - 2018-08-18
 ### Changed
 - Change API of `create_enum` to take two arguments instead, the name and an array of values

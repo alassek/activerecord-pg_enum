@@ -6,7 +6,9 @@ This will allow you to use enum columns in your database without replacing `sche
 
 ## Version support
 
-Currently only Rails 5.2 is supported. Support for previous versions going back to 4.1 are planned.
+I intend to support every version of Rails that supports `enum`, which was introduced in 4.1.
+
+Currently Rails 5.0 through 6.0 are supported.
 
 ## Installation
 
