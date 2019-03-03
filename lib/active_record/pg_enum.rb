@@ -7,7 +7,6 @@ require "active_support/lazy_load_hooks"
 ActiveSupport.on_load(:active_record) do
   require "active_record/pg_enum/command_recorder"
   require "active_record/pg_enum/postgresql_adapter"
-  require "active_record/pg_enum/schema_dumper"
   require "active_record/pg_enum/schema_statements"
   require "active_record/pg_enum/helper"
 
@@ -16,7 +15,13 @@ ActiveSupport.on_load(:active_record) do
   ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::NATIVE_DATABASE_TYPES.merge!(enum: { name: "enum" })
 
   if ar_version >= Gem::Version.new("5.2.0")
+    require "active_record/pg_enum/schema_dumper"
     ActiveRecord::ConnectionAdapters::PostgreSQL::SchemaDumper.prepend ActiveRecord::PGEnum::SchemaDumper
+  else
+    require "active_record/pg_enum/4.2/column_dumper"
+    require "active_record/pg_enum/4.2/schema_dumper"
+    ActiveRecord::ConnectionAdapters::PostgreSQL::ColumnDumper.prepend ActiveRecord::PGEnum::ColumnDumper
+    ActiveRecord::SchemaDumper.prepend ActiveRecord::PGEnum::SchemaDumper
   end
 
   ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.include ActiveRecord::PGEnum::PostgreSQLAdapter

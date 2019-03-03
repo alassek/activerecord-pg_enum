@@ -20,15 +20,6 @@ module ActiveRecord
         stream.puts
       end
 
-      # Gathers the arguments needed for the column line inside the create_table block.
-      def column_spec(column)
-        if column.type == :enum
-          return ["column", [column.sql_type.inspect, prepare_column_options(column)]]
-        end
-
-        super
-      end
-
       # Takes a column specification in Object form and serializes it into a String.
       def format_colspec(colspec)
         case colspec
