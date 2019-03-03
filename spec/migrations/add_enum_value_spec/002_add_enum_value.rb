@@ -1,4 +1,4 @@
-class AddEnumValue < ActiveRecord::Migration[5.2]
+class AddEnumValue < ActiveRecord::Migration::Current
   disable_ddl_transaction!
 
   def change
