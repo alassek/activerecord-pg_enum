@@ -1,4 +1,4 @@
-class AddStatuses < ActiveRecord::Migration[5.2]
+class AddStatuses < ActiveRecord::Migration::Current
   def up
     create_enum "status_type", %w[active archived]
   end

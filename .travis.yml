@@ -1,22 +1,28 @@
 sudo: false
 language: ruby
 rvm:
-- 2.1
-- 2.2
-- 2.5
+- 2.2.2
+- 2.5.0
 gemfile:
-- gemfiles/5.2.gemfile
+- gemfiles/5.0.gemfile
 - gemfiles/5.1.gemfile
+- gemfiles/5.2.gemfile
 - gemfiles/edge.gemfile
 matrix:
   exclude:
-  - rvm: 2.1
+  - rvm: 2.5.0
+    gemfile: gemfiles/5.0.gemfile
+  - rvm: 2.5.0
+    gemfile: gemfiles/5.1.gemfile
+  - rvm: 2.5.0
     gemfile: gemfiles/5.2.gemfile
+  - rvm: 2.2.2
+    gemfile: gemfiles/edge.gemfile
   allow_failures:
   - gemfile: gemfiles/edge.gemfile
 services:
 - postgresql
-before_install: gem install bundler -v 1.15.4
+before_install: gem install bundler -v 1.17.3
 script: "bundle exec rake spec"
 env:
   global:

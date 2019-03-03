@@ -6,6 +6,11 @@ appraise "5.1" do
   gem "activerecord", ">= 5.1.0", "< 5.2.0"
 end
 
+appraise "5.0" do
+  gem "activerecord", ">= 5.0.0", "< 5.1.0"
+  gem "i18n", "1.5.1"
+end
+
 appraise "edge" do
   gem "rails", git: "https://github.com/rails/rails.git", branch: "master"
 end

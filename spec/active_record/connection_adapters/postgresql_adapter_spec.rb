@@ -1,6 +1,6 @@
 require "spec_helper"
 
-RSpec.describe "ActiveRecord::ConnectionAdapters::PostgreSQLAdapter", version: "~> 5.2" do
+RSpec.describe "ActiveRecord::ConnectionAdapters::PostgreSQLAdapter" do
   subject { connection }
 
   it { is_expected.to respond_to :enum_types }
