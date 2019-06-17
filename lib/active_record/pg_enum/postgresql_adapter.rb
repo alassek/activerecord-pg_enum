@@ -1,5 +1,11 @@
 module ActiveRecord
   module PGEnum
+    def self.install_postgresql_adapter
+      require "active_record/connection_adapters/postgresql_adapter"
+      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.include PostgreSQLAdapter
+      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::NATIVE_DATABASE_TYPES.merge!(enum: { name: "enum" })
+    end
+
     module PostgreSQLAdapter
       # Helper method used by the monkeypatch internals. Provides a hash of ENUM types as they exist currently.
       #

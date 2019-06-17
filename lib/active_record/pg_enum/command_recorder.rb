@@ -1,5 +1,10 @@
 module ActiveRecord
   module PGEnum
+    def self.install_command_recorder
+      require "active_record/migration/command_recorder"
+      ActiveRecord::Migration::CommandRecorder.include CommandRecorder
+    end
+
     # ActiveRecord::Migration::CommandRecorder is a class used by reversible migrations.
     # It captures the forward migration commands and translates them into their inverse
     # by way of some simple metaprogramming.

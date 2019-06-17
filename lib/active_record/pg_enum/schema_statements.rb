@@ -1,5 +1,10 @@
 module ActiveRecord
   module PGEnum
+    def self.install_schema_statements
+      require "active_record/connection_adapters/postgresql/schema_statements"
+      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.include SchemaStatements
+    end
+
     module SchemaStatements
       # Create a new ENUM type, with an arbitrary number of values.
       #

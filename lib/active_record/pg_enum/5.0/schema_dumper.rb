@@ -1,5 +1,10 @@
 module ActiveRecord
   module PGEnum
+    def self.install_schema_dumper
+      require "active_record/schema_dumper"
+      ActiveRecord::SchemaDumper.prepend SchemaDumper
+    end
+
     module SchemaDumper
       private
 
@@ -18,18 +23,6 @@ module ActiveRecord
         end
 
         stream.puts
-      end
-
-      # Takes a column specification in Object form and serializes it into a String.
-      def format_colspec(colspec)
-        case colspec
-        when String
-          colspec
-        when Array
-          colspec.map { |value| format_colspec(value) }.select(&:present?).join(", ")
-        else
-          super
-        end
       end
     end
   end
