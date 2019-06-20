@@ -58,22 +58,30 @@ class AddSMSToContactMethodType < ActiveRecord::Migration[5.2]
 end
 ```
 
-### Helper Methods
+Adding an enum column to a table
 
 ```ruby
-class ContactInfo < ActiveRecord::Base
-  include ActiveRecord::PGEnum::Helper
-
-  pg_enum contact_method: %w[Email SMS Phone]
+class AddStatusToOrder < ActiveRecord::Migration[5.2]
+  def change
+    change_table :orders do |t|
+      t.enum :status, as: "status_type"
+    end
+  end
 end
 ```
 
-`pg_enum` is a wrapper around the official `enum` method that converts array syntax into strings. The above example is equivalent to:
+### Module Builder
 
 ```ruby
 class ContactInfo < ActiveRecord::Base
-  include ActiveRecord::PGEnum::Helper
+  include ActiveRecord::PGEnum(contact_method: %w[Email SMS Phone])
+end
+```
 
+The generated module calls the official `enum` method converting array syntax into strings. The above example is equivalent to:
+
+```ruby
+class ContactInfo < ActiveRecord::Base
   enum contact_method: { Email: "Email", SMS: "SMS", Phone: "Phone" }
 end
 ```

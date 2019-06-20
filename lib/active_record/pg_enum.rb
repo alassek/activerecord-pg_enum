@@ -3,7 +3,6 @@ require "active_record"
 
 ActiveSupport.on_load(:active_record) do
   require "active_record/pg_enum/helper"
-
   ActiveRecord::PGEnum.install Gem.loaded_specs["activerecord"].version
 end
 
@@ -27,12 +26,14 @@ module ActiveRecord
       require "active_record/pg_enum/postgresql_adapter"
       require "active_record/pg_enum/schema_statements"
       require "active_record/pg_enum/command_recorder"
+      require "active_record/pg_enum/table_definition"
 
       install_column_options
       install_schema_dumper
       install_postgresql_adapter
       install_schema_statements
       install_command_recorder
+      install_table_definition
     end
   end
 end
