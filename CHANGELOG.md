@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - Refactored init hook to be much more flexible
+- Removed `ActiveRecord::PGEnum::Helper` in favor of `ActiveRecord::PGEnum()` module builder
 
 ## [0.3.0] - 2019-03-03
 - Support for 5.0 and 5.1
