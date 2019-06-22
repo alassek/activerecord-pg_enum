@@ -38,17 +38,21 @@ module ActiveRecord
         install_table_definition
       end
 
-      private
+      require "active_record/pg_enum/#{major_minor}/prepare_column_options"
+      require "active_record/pg_enum/#{major_minor}/schema_dumper"
+      require "active_record/pg_enum/postgresql_adapter"
+      require "active_record/pg_enum/schema_statements"
+      require "active_record/pg_enum/command_recorder"
+      require "active_record/pg_enum/table_definition"
 
-      def approximate_version(version)
-        segments = version.respond_to?(:canonical_segments) ? version.canonical_segments : version.segments
+      install_column_options
+      install_schema_dumper
+      install_postgresql_adapter
+      install_schema_statements
+      install_command_recorder
+      install_table_definition
 
-        segments.pop     while segments.any? { |s| String === s }
-        segments.pop     while segments.size > 2
-        segments.push(0) while segments.size < 2
-
-        Gem::Version.new segments.join(".")
-      end
+      @enabled_version = major_minor
     end
   end
 end

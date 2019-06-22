@@ -53,7 +53,6 @@ module MigrationContext
         full_pathname = send "migration_#{version}"
 
         File.open(full_pathname, "w+") do |migration|
-          puts "WRITE: #{full_pathname}"
           migration.write(<<-EOF)
 class #{class_name} < #{migration_class}
 #{indented_body}
