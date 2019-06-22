@@ -1,6 +1,14 @@
 require "spec_helper"
 
 RSpec.describe "add_enum_value" do
+  with_migration "AddEnumValue", 2, <<-EOF
+    disable_ddl_transaction!
+
+    def change
+      add_enum_value "another_test_type", "baz", after: "bar"
+    end
+  EOF
+
   around :each do |example|
     execute "CREATE TYPE another_test_type AS ENUM ('foo', 'bar')"
     example.run
@@ -41,11 +49,9 @@ RSpec.describe "add_enum_value" do
   end
 
   describe "migration" do
-    let(:path) { spec_root / "migrations" / "add_enum_value_spec" }
-
     around :each do |example|
       ActiveRecord::SchemaMigration.tap(&:create_table).find_or_create_by(version: 1)
-      with_migrator(path) do |migrator|
+      with_migrator do |migrator|
         example.metadata[:migrator] = migrator
         example.run
       end
@@ -76,7 +82,7 @@ RSpec.describe "add_enum_value" do
     end
 
     context "< 5.2.0", version: "< 5.2.0" do
-      let(:migrations) { ActiveRecord::Migrator.migrations(path) }
+      let(:migrations) { ActiveRecord::Migrator.migrations(migration_path) }
 
       it "supports change in the forward direction" do |example|
         migrator = example.metadata[:migrator]

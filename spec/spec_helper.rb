@@ -42,6 +42,8 @@ RSpec.configure do |config|
         )
       SQL
     end
+
+    FileUtils.mkdir_p spec_root / "migrations"
   end
 
   config.after :suite do
@@ -49,6 +51,8 @@ RSpec.configure do |config|
       conn.execute %Q{DROP TABLE test_table}
       conn.execute %Q{DROP TYPE foo_type}
     end
+
+    FileUtils.rm_rf spec_root / "migrations"
   end
 
   # Create a metadata syntax for defining a version spec

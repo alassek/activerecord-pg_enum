@@ -1,7 +1,15 @@
 require "spec_helper"
 
 RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
-  let(:path) { spec_root / "migrations" / "schema_statements_spec" }
+  with_migration :AddStatuses, 1, <<-EOF
+    def up
+      create_enum "status_type", %w[active archived]
+    end
+
+    def down
+      drop_enum :status_type
+    end
+  EOF
 
   context "create_enum" do
     before :each do
@@ -15,7 +23,7 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
     end
 
     it "creates a new enum", version: ">= 5.2.0" do
-      with_migrator(path) do |subject|
+      with_migrator do |subject|
         expect(subject.current_version).to eq 0
         expect { subject.up(1) }.to_not raise_error
         expect(subject.current_version).to eq 1
@@ -24,9 +32,9 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
     end
 
     it "creates a new enum", version: "< 5.2.0" do
-      with_migrator(path) do |subject|
+      with_migrator do |subject|
         expect(subject.current_version).to eq 0
-        expect { subject.up(path, 1) }.to_not raise_error
+        expect { subject.up(migration_path, 1) }.to_not raise_error
         expect(subject.current_version).to eq 1
         expect(connection.enum_types).to include("status_type" => %w[active archived])
       end
@@ -41,7 +49,7 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
     end
 
     it "drops the enum type", version: ">= 5.2.0" do
-      with_migrator(path) do |subject|
+      with_migrator do |subject|
         expect(subject.current_version).to eq 1
         expect { subject.down(0) }.to_not raise_error
         expect(subject.current_version).to eq 0
@@ -50,9 +58,9 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
     end
 
     it "drops the enum type", version: "< 5.2.0" do
-      with_migrator(path) do |subject|
+      with_migrator do |subject|
         expect(subject.current_version).to eq 1
-        expect { subject.down(path, 0) }.to_not raise_error
+        expect { subject.down(migration_path, 0) }.to_not raise_error
         expect(subject.current_version).to eq 0
         expect(connection.enum_types).to_not include("status_type" => %w[active archived])
       end

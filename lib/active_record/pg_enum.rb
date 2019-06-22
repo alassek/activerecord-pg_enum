@@ -10,6 +10,10 @@ module ActiveRecord
   module PGEnum
     KNOWN_VERSIONS = %w[5.0 5.1 5.2 6.alpha].map { |v| Gem::Version.new(v) }
 
+    class << self
+      attr_reader :enabled_version
+    end
+
     def self.install(version)
       major_minor = version.canonical_segments[0..1].join(".")
       major_minor = Gem::Version.new(major_minor)
@@ -34,6 +38,8 @@ module ActiveRecord
       install_schema_statements
       install_command_recorder
       install_table_definition
+
+      @enabled_version = major_minor
     end
   end
 end

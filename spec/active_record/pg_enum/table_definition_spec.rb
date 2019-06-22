@@ -1,7 +1,13 @@
 require "spec_helper"
 
 RSpec.describe ActiveRecord::PGEnum::TableDefinition do
-  let(:path) { spec_root / "migrations" / "table_definition_spec" }
+  with_migration "AddStatusToQuux", 1, <<-EOF
+    def change
+      create_table :quux do |t|
+        t.enum :status, as: "status_type"
+      end
+    end
+  EOF
 
   around :each do |example|
     ActiveRecord::SchemaMigration.drop_table
@@ -20,7 +26,7 @@ RSpec.describe ActiveRecord::PGEnum::TableDefinition do
   end
 
   it "understands enum as a column type", version: ">= 5.2.0" do
-    with_migrator(path) do |subject|
+    with_migrator do |subject|
       expect { subject.up(1) }.to_not raise_error
 
       column = Quux.columns.detect { |col| col.name == "status" }
@@ -31,8 +37,8 @@ RSpec.describe ActiveRecord::PGEnum::TableDefinition do
   end
 
   it "understands enum as a column type", version: "< 5.2.0" do
-    with_migrator(path) do |subject|
-      expect { subject.up(path, 1) }.to_not raise_error
+    with_migrator do |subject|
+      expect { subject.up(migration_path, 1) }.to_not raise_error
 
       column = Quux.columns.detect { |col| col.name == "status" }
 
