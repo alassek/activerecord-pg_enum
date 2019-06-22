@@ -8,38 +8,47 @@ end
 
 module ActiveRecord
   module PGEnum
-    KNOWN_VERSIONS = %w[5.0 5.1 5.2 6.alpha].map { |v| Gem::Version.new(v) }
+    KNOWN_VERSIONS = %w[5.0 5.1 5.2 6.0].map { |v| Gem::Version.new(v) }
 
     class << self
       attr_reader :enabled_version
-    end
 
-    def self.install(version)
-      major_minor = version.canonical_segments[0..1].join(".")
-      major_minor = Gem::Version.new(major_minor)
+      def install(version)
+        @enabled_version = approximate_version(version)
 
-      # Don't immediately fail if we don't yet support the current version.
-      # There's at least a chance it could work.
-      if !KNOWN_VERSIONS.include?(major_minor) && major_minor > KNOWN_VERSIONS.last
-        major_minor = KNOWN_VERSIONS.last
-        warn "[PGEnum] Current ActiveRecord version unsupported! Falling back to: #{major_minor}"
+        # Don't immediately fail if we don't yet support the current version.
+        # There's at least a chance it could work.
+        if !KNOWN_VERSIONS.include?(enabled_version) && enabled_version > KNOWN_VERSIONS.last
+          @enabled_version = KNOWN_VERSIONS.last
+          warn "[PGEnum] Current ActiveRecord version unsupported! Falling back to: #{enabled_version}"
+        end
+
+        require "active_record/pg_enum/#{enabled_version}/prepare_column_options"
+        require "active_record/pg_enum/#{enabled_version}/schema_dumper"
+        require "active_record/pg_enum/postgresql_adapter"
+        require "active_record/pg_enum/schema_statements"
+        require "active_record/pg_enum/command_recorder"
+        require "active_record/pg_enum/table_definition"
+
+        install_column_options
+        install_schema_dumper
+        install_postgresql_adapter
+        install_schema_statements
+        install_command_recorder
+        install_table_definition
       end
 
-      require "active_record/pg_enum/#{major_minor}/prepare_column_options"
-      require "active_record/pg_enum/#{major_minor}/schema_dumper"
-      require "active_record/pg_enum/postgresql_adapter"
-      require "active_record/pg_enum/schema_statements"
-      require "active_record/pg_enum/command_recorder"
-      require "active_record/pg_enum/table_definition"
+      private
 
-      install_column_options
-      install_schema_dumper
-      install_postgresql_adapter
-      install_schema_statements
-      install_command_recorder
-      install_table_definition
+      def approximate_version(version)
+        segments = version.respond_to?(:canonical_segments) ? version.canonical_segments : version.segments
 
-      @enabled_version = major_minor
+        segments.pop     while segments.any? { |s| String === s }
+        segments.pop     while segments.size > 2
+        segments.push(0) while segments.size < 2
+
+        Gem::Version.new segments.join(".")
+      end
     end
   end
 end
