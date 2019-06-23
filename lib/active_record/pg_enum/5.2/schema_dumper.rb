@@ -1,4 +1,4 @@
-require "active_record/pg_enum/5.0/schema_dumper"
+require "active_record/pg_enum/4.2/schema_dumper"
 
 module ActiveRecord
   module PGEnum

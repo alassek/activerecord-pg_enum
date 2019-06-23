@@ -8,7 +8,7 @@ end
 
 module ActiveRecord
   module PGEnum
-    KNOWN_VERSIONS = %w[5.0 5.1 5.2 6.0].map { |v| Gem::Version.new(v) }
+    KNOWN_VERSIONS = %w[4.2 5.0 5.1 5.2 6.0].map { |v| Gem::Version.new(v) }
 
     class << self
       attr_reader :enabled_version

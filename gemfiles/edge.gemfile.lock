@@ -67,7 +67,7 @@ PATH
   remote: ..
   specs:
     activerecord-pg_enum (0.4.0)
-      activerecord (>= 5.0.0)
+      activerecord (>= 4.2.0)
       activesupport
       pg
 
