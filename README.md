@@ -1,4 +1,4 @@
-# ActiveRecord::PGEnum [![Build Status](https://travis-ci.com/getflywheel/activerecord-pg_enum.svg?branch=master)](https://travis-ci.com/getflywheel/activerecord-pg_enum)
+# ActiveRecord::PGEnum [![Build Status](https://travis-ci.com/alassek/activerecord-pg_enum.svg?branch=master)](https://travis-ci.com/alassek/activerecord-pg_enum)
 
 The `enum` feature in Rails has bad developer ergonomics. It uses integer types at the DB layer, which means trying to understand SQL output is a pain.
 
