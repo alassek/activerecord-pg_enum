@@ -1,14 +1,46 @@
 # ActiveRecord::PGEnum [![Build Status](https://travis-ci.com/getflywheel/activerecord-pg_enum.svg?branch=master)](https://travis-ci.com/getflywheel/activerecord-pg_enum)
 
-This gem is a small monkeypatch to ActiveRecord so that your `schema.rb` file can support PostgreSQL's native enumerated types.
+The `enum` feature in Rails has bad developer ergonomics. It uses integer types at the DB layer, which means trying to understand SQL output is a pain.
 
-This will allow you to use enum columns in your database without replacing `schema.rb` with `structure.sql`.
+Using the easy form of the helper syntax is a minor footgun:
+
+```ruby
+enum status: %w[new active archived]
+```
+
+It's not obvious that the above code is order-dependent, but if you decide to add a new enum anywhere but the end, you're in trouble.
+
+If you choose the use `varchar` fields instead, now you have to write annoying check constraints and lose the efficient storage.
+
+```ruby
+enum status: { new: "new", active: "active", archived: "archived" }
+```
+
+Nobody has time to write that nonsense.
+
+## Enumerated Types: The Best of Both Worlds
+
+Did you know you can define your own types in PostgreSQL? You can, and this type system also supports enumeration.
+
+```SQL
+CREATE TYPE status_type AS ENUM ('new', 'active', 'archived');
+```
+
+Not only does this give you full type safety at the DB layer, the implementation is highly efficient. An enum value only takes up [four bytes](https://www.postgresql.org/docs/11/datatype-enum.html).
+
+The best part is that PostgreSQL supports inserting new values at any point of the list without having to migrate your data.
+
+```SQL
+ALTER TYPE status_type ADD VALUE 'pending' BEFORE 'active';
+```
 
 ## Version support
 
-I intend to support every version of Rails that supports `enum`, which was introduced in 4.1.
+Every version of Rails with an `enum` macro is supported. This means 4.1 through master. Yes, this was annoying and difficult.
 
-Currently Rails 5.0 through 6.0 are supported.
+The monkeypatches in this library are extremely narrow and contained; the dirty hacks I had to do to make 4.1 work, for instance, have no impact on 6.0.
+
+Monkeypatching Rails internals is **scary**. So this library has a comprehensive test suite that runs against every known minor version.
 
 ## Installation
 
@@ -21,10 +53,6 @@ gem 'activerecord-pg_enum'
 And then execute:
 
     $ bundle
-
-Or install it yourself as:
-
-    $ gem install activerecord-pg_enum
 
 ## Usage
 
@@ -64,7 +92,7 @@ Adding an enum column to a table
 class AddStatusToOrder < ActiveRecord::Migration[5.2]
   def change
     change_table :orders do |t|
-      t.enum :status, as: "status_type"
+      t.enum :status, as: "status_type", default: "new"
     end
   end
 end
@@ -90,13 +118,15 @@ There's no technical reason why you couldn't detect enum columns at startup time
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `appraise rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+Test a specific version with `appraise 6.0 rake spec`. This is usually necessary because different versions have different Ruby version support.
+
+To install this gem onto your local machine, run `bundle exec rake install`.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/getflywheel/activerecord-pg_enum.
+Bug reports and pull requests are welcome on GitHub at https://github.com/alassek/activerecord-pg_enum.
 
 ## License
 

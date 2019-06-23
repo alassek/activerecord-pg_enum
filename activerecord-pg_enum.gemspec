@@ -5,16 +5,16 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "active_record/pg_enum/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "activerecord-pg_enum"
-  spec.version       = ActiveRecord::PGEnum::VERSION
-  spec.authors       = ["Adam Lassek"]
-  spec.email         = ["adam@doubleprime.net"]
+  spec.name    = "activerecord-pg_enum"
+  spec.version = ActiveRecord::PGEnum::VERSION
+  spec.authors = ["Adam Lassek"]
+  spec.email   = ["adam@doubleprime.net"]
 
-  spec.summary       = %q{Integrate PostgreSQL's enumerated types with the Rails enum feature}
-  spec.homepage      = "https://github.com/getflywheel/activerecord-pg_enum"
-  spec.license       = "MIT"
+  spec.summary  = %q{Integrate PostgreSQL's enumerated types with the Rails enum feature}
+  spec.homepage = "https://github.com/alassek/activerecord-pg_enum"
+  spec.license  = "MIT"
 
-  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
+  spec.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
 
