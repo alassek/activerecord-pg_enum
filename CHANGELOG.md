@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.0] - 2019-06-23
+### Added
+- Support for 4.1 and 4.2
+
+### Changed
+- Moved module builder to top-level `PGEnum()` method
+
 ## [0.4.0] - 2019-06-19
 ### Added
 - `enum` method on `TableDefinition`
