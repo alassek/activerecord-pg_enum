@@ -47,7 +47,5 @@ RSpec.configure do |config|
   #
   #   RSpec.describe "Subject", version: ">= 6.0.0"
   #   Will only run the spec if ActiveRecord is >= 6.0.0
-  config.around(:each) do |example|
-    example.run if VersionMatcher.new("activerecord").matches?(example)
-  end
+  config.filter_run_excluding version: VersionMatcher.new("activerecord").to_proc
 end
