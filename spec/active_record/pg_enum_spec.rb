@@ -1,6 +1,15 @@
 require "spec_helper"
 
 RSpec.describe ActiveRecord::PGEnum do
+  let(:schema_file) { spec_root / "fixtures" / "schema.rb" }
+
+  before { load_schema(db_config, :ruby, schema_file) }
+
+  after :each do
+    connection.execute "DROP TABLE IF EXISTS test_table"
+    connection.execute "DROP TYPE IF EXISTS foo_type"
+  end
+
   class TestTable < ActiveRecord::Base
     self.table_name = "test_table"
   end

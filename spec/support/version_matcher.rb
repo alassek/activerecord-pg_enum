@@ -10,6 +10,14 @@ class VersionMatcher
     requirement(version).satisfied_by? spec.version
   end
 
+  def when(version)
+    return unless block_given?
+
+    if requirement(version).satisfied_by? spec.version
+      yield
+    end
+  end
+
   private
 
   def requirement(version)

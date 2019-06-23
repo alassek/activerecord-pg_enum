@@ -3,6 +3,21 @@ module MigrationContext
     klass.extend ClassMethods
   end
 
+  # The arity of load_schema is different depending on version.
+  # Versions prior to 5.0 relied on global configuration, whereas
+  # 5.0+ use a required argument.
+  def load_schema(config, format, filename)
+    ActiveRecord::Tasks::DatabaseTasks.tap do |db|
+      method_name = if db.respond_to? :load_schema_for
+        :load_schema_for
+      else
+        :load_schema
+      end
+
+      db.public_send method_name, config, format, filename
+    end
+  end
+
   # Rails 5.2 moved from a unary Migrator class to
   # MigrationContext, that can be scoped to a given
   # path.

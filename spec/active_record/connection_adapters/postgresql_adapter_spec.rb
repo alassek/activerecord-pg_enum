@@ -19,7 +19,7 @@ RSpec.describe "ActiveRecord::ConnectionAdapters::PostgreSQLAdapter" do
     end
 
     it "lists types in alphabetical order" do
-      expect(subject.enum_types.keys).to eq %w[bar_type baz_type foo_type quux_type]
+      expect(subject.enum_types.keys).to eq %w[bar_type baz_type quux_type]
     end
   end
 end

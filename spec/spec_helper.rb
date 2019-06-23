@@ -33,25 +33,11 @@ RSpec.configure do |config|
   end
 
   config.before :suite do
-    ActiveRecord::Base.connection_pool.with_connection do |conn|
-      conn.execute %Q{CREATE TYPE foo_type AS ENUM ('bar', 'baz')}
-      conn.execute <<-SQL.strip_heredoc
-        CREATE TABLE test_table (
-          id serial PRIMARY KEY,
-          foo foo_type NOT NULL
-        )
-      SQL
-    end
-
+    ActiveRecord::SchemaMigration.create_table
     FileUtils.mkdir_p spec_root / "migrations"
   end
 
   config.after :suite do
-    ActiveRecord::Base.connection_pool.with_connection do |conn|
-      conn.execute %Q{DROP TABLE test_table}
-      conn.execute %Q{DROP TYPE foo_type}
-    end
-
     FileUtils.rm_rf spec_root / "migrations"
   end
 
