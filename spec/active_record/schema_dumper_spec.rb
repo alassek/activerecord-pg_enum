@@ -7,11 +7,15 @@ RSpec.describe "ActiveRecord::SchemaDumper" do
   subject { StringIO.new }
 
   around :each do |example|
-    VersionMatcher.new("activerecord").when "< 5.0" do
+    version.when "< 5.0" do
       connection.execute "DROP TABLE IF EXISTS ar_internal_metadata"
+      db_tasks.load_schema_for db_config, :ruby, schema_file
     end
 
-    load_schema db_config, :ruby, schema_file
+    version.when ">= 5.0" do
+      db_tasks.load_schema db_config, :ruby, schema_file
+    end
+
     described_class.dump(connection, subject)
     subject.rewind
 

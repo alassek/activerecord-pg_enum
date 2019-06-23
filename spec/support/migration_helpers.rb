@@ -3,40 +3,26 @@ module MigrationHelpers
     klass.extend ClassMethods
   end
 
-  # The arity of load_schema is different depending on version.
-  # Versions prior to 5.0 relied on global configuration, whereas
-  # 5.0+ use a required argument.
-  def load_schema(config, format, filename)
-    ActiveRecord::Tasks::DatabaseTasks.tap do |db|
-      load_schema = db.method(:load_schema)
-
-      method_name = if load_schema.parameters.include?([:req, :configuration])
-        :load_schema
-      else
-        :load_schema_for
-      end
-
-      db.public_send method_name, config, format, filename
-      connection.send :reload_type_map
-    end
+  def db_tasks
+    ActiveRecord::Tasks::DatabaseTasks
   end
 
   # Rails 5.2 moved from a unary Migrator class to
   # MigrationContext, that can be scoped to a given
   # path.
-  def with_migrator
-    if defined?(ActiveRecord::MigrationContext)
-      yield ActiveRecord::MigrationContext.new(migration_path)
-    else
-      migrator  = ActiveRecord::Migrator
-      old_paths = migrator.migrations_paths
+  def migration_context
+    ActiveRecord::MigrationContext.new(migration_path)
+  end
 
-      migrator.migrations_paths = [migration_path.to_s]
+  def legacy_migrator
+    migrator  = ActiveRecord::Migrator
+    old_paths = migrator.migrations_paths
 
-      yield migrator
+    migrator.migrations_paths = [migration_path.to_s]
 
-      migrator.migrations_paths = old_paths
-    end
+    yield migrator
+
+    migrator.migrations_paths = old_paths
   end
 
   # The base class for migrations moves around a lot

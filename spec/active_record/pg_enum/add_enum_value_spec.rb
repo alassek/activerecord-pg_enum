@@ -52,10 +52,7 @@ RSpec.describe "add_enum_value" do
   describe "migration" do
     around :each do |example|
       ActiveRecord::SchemaMigration.tap(&:create_table).find_or_create_by(version: "1")
-      with_migrator do |migrator|
-        example.metadata[:migrator] = migrator
-        example.run
-      end
+      example.run
       ActiveRecord::SchemaMigration.where(version: "2").delete_all
     end
 
@@ -64,18 +61,16 @@ RSpec.describe "add_enum_value" do
     end
 
     context ">= 5.2.0", version: ">= 5.2.0" do
-      it "supports change in the forward direction" do |example|
-        subject = example.metadata[:migrator]
+      subject { migration_context }
 
+      it "supports change in the forward direction" do
         expect { subject.up(2) }.to change(subject, :current_version).from(1).to(2)
         expect(definition).to eq %w[foo bar baz]
       end
 
-      it "raises an IrreversibleMigration if rolled back" do |example|
+      it "raises an IrreversibleMigration if rolled back" do
         execute "ALTER TYPE another_test_type ADD VALUE 'baz'"
         ActiveRecord::SchemaMigration.find_or_create_by(version: "2")
-
-        subject = example.metadata[:migrator]
 
         # ActiveRecord::Migrator traps IrreversibleMigration and reraises a StandardError
         expect { subject.down(1) }.to raise_error(StandardError)
@@ -84,6 +79,13 @@ RSpec.describe "add_enum_value" do
 
     context "< 5.2.0", version: "< 5.2.0" do
       let(:migrations) { ActiveRecord::Migrator.migrations(migration_path) }
+
+      around :each do |example|
+        legacy_migrator do |migrator|
+          example.metadata[:migrator] = migrator
+          example.run
+        end
+      end
 
       it "supports change in the forward direction" do |example|
         migrator = example.metadata[:migrator]

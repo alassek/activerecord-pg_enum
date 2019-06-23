@@ -25,8 +25,10 @@ RSpec.describe ActiveRecord::PGEnum::TableDefinition do
     self.table_name = "quux"
   end
 
-  it "understands enum as a column type", version: ">= 5.2.0" do
-    with_migrator do |subject|
+  context "MigrationContext", version: ">= 5.2.0" do
+    subject { migration_context }
+
+    it "understands enum as a column type" do
       expect { subject.up(1) }.to_not raise_error
 
       column = Quux.columns.detect { |col| col.name == "status" }
@@ -36,14 +38,16 @@ RSpec.describe ActiveRecord::PGEnum::TableDefinition do
     end
   end
 
-  it "understands enum as a column type", version: "< 5.2.0" do
-    with_migrator do |subject|
-      expect { subject.up(migration_path, 1) }.to_not raise_error
+  context "Migrator", version: "< 5.2.0" do
+    it "understands enum as a column type" do
+      legacy_migrator do |subject|
+        expect { subject.up(migration_path, 1) }.to_not raise_error
 
-      column = Quux.columns.detect { |col| col.name == "status" }
+        column = Quux.columns.detect { |col| col.name == "status" }
 
-      expect(column).to_not be_nil
-      expect(column.sql_type).to eq "status_type"
+        expect(column).to_not be_nil
+        expect(column.sql_type).to eq "status_type"
+      end
     end
   end
 end

@@ -3,7 +3,11 @@ require "spec_helper"
 RSpec.describe ActiveRecord::PGEnum do
   let(:schema_file) { spec_root / "fixtures" / "schema.rb" }
 
-  before { load_schema(db_config, :ruby, schema_file) }
+  before :each do
+    version
+      .when("< 5.0")  { db_tasks.load_schema_for db_config, :ruby, schema_file }
+      .when(">= 5.0") { db_tasks.load_schema db_config, :ruby, schema_file }
+  end
 
   after :each do
     connection.execute "DROP TABLE IF EXISTS test_table"

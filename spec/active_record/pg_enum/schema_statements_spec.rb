@@ -11,6 +11,8 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
     end
   EOF
 
+  subject { migration_context }
+
   context "create_enum" do
     before :each do
       ActiveRecord::SchemaMigration.drop_table
@@ -23,16 +25,14 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
     end
 
     it "creates a new enum", version: ">= 5.2.0" do
-      with_migrator do |subject|
-        expect(subject.current_version).to eq 0
-        expect { subject.up(1) }.to_not raise_error
-        expect(subject.current_version).to eq 1
-        expect(connection.enum_types).to include("status_type" => %w[active archived])
-      end
+      expect(subject.current_version).to eq 0
+      expect { subject.up(1) }.to_not raise_error
+      expect(subject.current_version).to eq 1
+      expect(connection.enum_types).to include("status_type" => %w[active archived])
     end
 
     it "creates a new enum", version: "< 5.2.0" do
-      with_migrator do |subject|
+      legacy_migrator do |subject|
         expect(subject.current_version).to eq 0
         expect { subject.up(migration_path, 1) }.to_not raise_error
         expect(subject.current_version).to eq 1
@@ -49,16 +49,14 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
     end
 
     it "drops the enum type", version: ">= 5.2.0" do
-      with_migrator do |subject|
-        expect(subject.current_version).to eq 1
-        expect { subject.down(0) }.to_not raise_error
-        expect(subject.current_version).to eq 0
-        expect(connection.enum_types).to_not include("status_type" => %w[active archived])
-      end
+      expect(subject.current_version).to eq 1
+      expect { subject.down(0) }.to_not raise_error
+      expect(subject.current_version).to eq 0
+      expect(connection.enum_types).to_not include("status_type" => %w[active archived])
     end
 
     it "drops the enum type", version: "< 5.2.0" do
-      with_migrator do |subject|
+      legacy_migrator do |subject|
         expect(subject.current_version).to eq 1
         expect { subject.down(migration_path, 0) }.to_not raise_error
         expect(subject.current_version).to eq 0

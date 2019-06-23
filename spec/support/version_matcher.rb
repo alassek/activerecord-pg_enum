@@ -14,8 +14,9 @@ class VersionMatcher
   end
 
   def when(version)
-    return unless block_given?
+    return self unless block_given?
     yield if matches?(version)
+    self
   end
 
   def to_proc
