@@ -1,6 +1,6 @@
 module ActiveRecord
   module PGEnum
-    def self.install_postgresql_adapter
+    register :postgresql_adapter do
       require "active_record/connection_adapters/postgresql_adapter"
       ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.include PostgreSQLAdapter
       ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::NATIVE_DATABASE_TYPES.merge!(enum: { name: "enum" })

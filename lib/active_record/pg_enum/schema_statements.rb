@@ -1,6 +1,6 @@
 module ActiveRecord
   module PGEnum
-    def self.install_schema_statements
+    register :schema_statements do
       require "active_record/connection_adapters/postgresql/schema_statements"
       ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.include SchemaStatements
     end

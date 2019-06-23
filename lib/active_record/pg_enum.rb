@@ -23,36 +23,37 @@ module ActiveRecord
           warn "[PGEnum] Current ActiveRecord version unsupported! Falling back to: #{enabled_version}"
         end
 
-        require "active_record/pg_enum/#{enabled_version}/prepare_column_options"
-        require "active_record/pg_enum/#{enabled_version}/schema_dumper"
-        require "active_record/pg_enum/postgresql_adapter"
-        require "active_record/pg_enum/schema_statements"
-        require "active_record/pg_enum/command_recorder"
-        require "active_record/pg_enum/table_definition"
-
-        install_column_options
-        install_schema_dumper
-        install_postgresql_adapter
-        install_schema_statements
-        install_command_recorder
-        install_table_definition
+        initialize!
       end
 
-      require "active_record/pg_enum/#{major_minor}/prepare_column_options"
-      require "active_record/pg_enum/#{major_minor}/schema_dumper"
-      require "active_record/pg_enum/postgresql_adapter"
-      require "active_record/pg_enum/schema_statements"
-      require "active_record/pg_enum/command_recorder"
-      require "active_record/pg_enum/table_definition"
+      def register(patch, &block)
+        monkeypatches[patch] = block
+      end
 
-      install_column_options
-      install_schema_dumper
-      install_postgresql_adapter
-      install_schema_statements
-      install_command_recorder
-      install_table_definition
+      private
 
-      @enabled_version = major_minor
+      def monkeypatches
+        @patches ||= {}
+      end
+
+      def initialize!
+        require "active_record/pg_enum/command_recorder"
+        require "active_record/pg_enum/postgresql_adapter"
+        require "active_record/pg_enum/schema_statements"
+
+        Dir[File.join(__dir__, "pg_enum", enabled_version.to_s, "*.rb")].each { |file| require file }
+        monkeypatches.keys.each { |patch| monkeypatches.delete(patch).call }
+      end
+
+      def approximate_version(version)
+        segments = version.respond_to?(:canonical_segments) ? version.canonical_segments : version.segments
+
+        segments.pop     while segments.any? { |s| String === s }
+        segments.pop     while segments.size > 2
+        segments.push(0) while segments.size < 2
+
+        Gem::Version.new segments.join(".")
+      end
     end
   end
 end

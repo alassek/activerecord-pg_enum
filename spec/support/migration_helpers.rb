@@ -1,4 +1,4 @@
-module MigrationContext
+module MigrationHelpers
   def self.included(klass)
     klass.extend ClassMethods
   end
@@ -8,13 +8,16 @@ module MigrationContext
   # 5.0+ use a required argument.
   def load_schema(config, format, filename)
     ActiveRecord::Tasks::DatabaseTasks.tap do |db|
-      method_name = if db.respond_to? :load_schema_for
-        :load_schema_for
-      else
+      load_schema = db.method(:load_schema)
+
+      method_name = if load_schema.parameters.include?([:req, :configuration])
         :load_schema
+      else
+        :load_schema_for
       end
 
       db.public_send method_name, config, format, filename
+      connection.send :reload_type_map
     end
   end
 

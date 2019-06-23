@@ -1,6 +1,6 @@
 module ActiveRecord
   module PGEnum
-    def self.install_command_recorder
+    register :command_recorder do
       require "active_record/migration/command_recorder"
       ActiveRecord::Migration::CommandRecorder.include CommandRecorder
     end
