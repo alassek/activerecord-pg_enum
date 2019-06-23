@@ -18,8 +18,8 @@ matrix:
     gemfile: gemfiles/edge.gemfile
   allow_failures:
   - gemfile: gemfiles/edge.gemfile
-services:
-- postgresql
+addons:
+  postgresql: "9.3"
 before_install: gem install bundler -v 1.17.3
 script: "bundle exec rake spec"
 env:
