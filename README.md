@@ -74,7 +74,7 @@ end
 
 ```ruby
 class ContactInfo < ActiveRecord::Base
-  include ActiveRecord::PGEnum(contact_method: %w[Email SMS Phone])
+  include PGEnum(contact_method: %w[Email SMS Phone])
 end
 ```
 

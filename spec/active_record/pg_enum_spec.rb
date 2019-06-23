@@ -30,13 +30,13 @@ RSpec.describe ActiveRecord::PGEnum do
     expect { TestTable.create!(foo: "quux") }.to raise_error(ActiveRecord::StatementInvalid)
   end
 
-  describe "ActiveRecord::PGEnum()" do
+  describe "PGEnum()" do
     subject { TestTable }
 
     it "converts arrays of values into hashes for ::enum" do
       expect(TestTable).to receive(:enum).with(foo_type: { bar: "bar", baz: "baz" }).and_call_original
 
-      TestTable.include ActiveRecord.PGEnum(foo_type: %i[bar baz])
+      TestTable.include PGEnum(foo_type: %i[bar baz])
 
       expect(TestTable).to respond_to :foo_types
       expect(TestTable.foo_types).to match({ "bar" => "bar", "baz" => "baz" })
