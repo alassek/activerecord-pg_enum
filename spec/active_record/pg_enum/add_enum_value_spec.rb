@@ -10,6 +10,7 @@ RSpec.describe "add_enum_value" do
   EOF
 
   around :each do |example|
+    execute "DROP TYPE IF EXISTS another_test_type"
     execute "CREATE TYPE another_test_type AS ENUM ('foo', 'bar')"
     example.run
     execute "DROP TYPE another_test_type"
@@ -50,12 +51,12 @@ RSpec.describe "add_enum_value" do
 
   describe "migration" do
     around :each do |example|
-      ActiveRecord::SchemaMigration.tap(&:create_table).find_or_create_by(version: 1)
+      ActiveRecord::SchemaMigration.tap(&:create_table).find_or_create_by(version: "1")
       with_migrator do |migrator|
         example.metadata[:migrator] = migrator
         example.run
       end
-      ActiveRecord::SchemaMigration.where(version: 2).delete_all
+      ActiveRecord::SchemaMigration.where(version: "2").delete_all
     end
 
     def definition
@@ -72,7 +73,7 @@ RSpec.describe "add_enum_value" do
 
       it "raises an IrreversibleMigration if rolled back" do |example|
         execute "ALTER TYPE another_test_type ADD VALUE 'baz'"
-        ActiveRecord::SchemaMigration.find_or_create_by(version: 2)
+        ActiveRecord::SchemaMigration.find_or_create_by(version: "2")
 
         subject = example.metadata[:migrator]
 
@@ -94,7 +95,7 @@ RSpec.describe "add_enum_value" do
 
       it "raises an IrreversibleMigration if rolled back" do |example|
         execute "ALTER TYPE another_test_type ADD VALUE 'baz'"
-        ActiveRecord::SchemaMigration.find_or_create_by(version: 2)
+        ActiveRecord::SchemaMigration.find_or_create_by(version: "2")
 
         migrator = example.metadata[:migrator]
         subject  = migrator.new(:down, migrations, 1)

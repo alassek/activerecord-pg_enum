@@ -12,12 +12,16 @@ module ActiveRecord
       #
       #   create_enum("foo_type", "foo", "bar", "baz")
       def create_enum(name, values)
-        execute "CREATE TYPE #{name} AS ENUM (#{Array(values).map { |v| "'#{v}'" }.join(", ")})"
+        execute("CREATE TYPE #{name} AS ENUM (#{Array(values).map { |v| "'#{v}'" }.join(", ")})").tap {
+          reload_type_map
+        }
       end
 
       # Drop an ENUM type from the database.
       def drop_enum(name, values_for_revert = nil)
-        execute "DROP TYPE #{name}"
+        execute("DROP TYPE #{name}").tap {
+          reload_type_map
+        }
       end
 
       # Add a new value to an existing ENUM type.
@@ -41,7 +45,7 @@ module ActiveRecord
           cmd << " AFTER '#{after}'"
         end
 
-        execute cmd
+        execute(cmd).tap { reload_type_map }
       end
     end
   end

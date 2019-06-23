@@ -1,8 +1,8 @@
 module ActiveRecord
   module PGEnum
-    def self.install_table_definition
+    register :table_definition do
       require "active_record/connection_adapters/postgresql_adapter"
-      ActiveRecord::ConnectionAdapters::PostgreSQL::TableDefinition.include TableDefinition
+      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::TableDefinition.include TableDefinition
     end
 
     module TableDefinition

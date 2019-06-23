@@ -45,7 +45,7 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
     before :each do
       execute "DROP TYPE IF EXISTS status_type"
       execute "CREATE TYPE status_type AS ENUM ('active', 'archived')"
-      ActiveRecord::SchemaMigration.tap(&:create_table).find_or_create_by(version: 1)
+      ActiveRecord::SchemaMigration.tap(&:create_table).find_or_create_by(version: "1")
     end
 
     it "drops the enum type", version: ">= 5.2.0" do

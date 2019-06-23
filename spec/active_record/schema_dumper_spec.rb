@@ -27,6 +27,10 @@ RSpec.describe "ActiveRecord::SchemaDumper" do
     expect(subject.string).to include %Q{create_enum "foo_type", %w[bar baz]}
   end
 
+  it "dumps the table definition" do
+    expect(subject.string).to include %Q{t.enum "foo", null: false, as: "foo_type"}
+  end
+
   it "places create_enum after enable_extension and before create_table" do
     ext, enum, table = 0, 0, 0
 
