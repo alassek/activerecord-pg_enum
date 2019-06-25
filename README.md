@@ -42,6 +42,25 @@ The monkeypatches in this library are extremely narrow and contained; the dirty 
 
 Monkeypatching Rails internals is **scary**. So this library has a comprehensive test suite that runs against every known minor version.
 
+## schema.rb Support
+
+The principle motivation of this gem is to seamlessly integration PG enums into your `schema.rb` file. This means you can use them in your database columns without switching to `structure.sql`.
+
+```ruby
+ActiveRecord::Schema.define(version: 2019_06_19_214914) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_enum "status_type", %w[new pending active archived]
+  
+  create_table "orders", id: :serial, force: :cascade do |t|
+    t.enum "status", as: "status_type", default: "new"
+  end
+
+end
+```
+
 ## Installation
 
 Add this line to your application's Gemfile:
