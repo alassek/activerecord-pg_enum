@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    activerecord-pg_enum (0.4.0)
+    activerecord-pg_enum (1.0.0)
       activerecord (>= 4.1.0)
       activesupport
       pg
@@ -74,4 +74,4 @@ DEPENDENCIES
   rspec (~> 3.0)
 
 BUNDLED WITH
-   1.16.3
+   1.17.3
