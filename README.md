@@ -137,9 +137,9 @@ There's no technical reason why you couldn't detect enum columns at startup time
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `appraise rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `appraisal rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-Test a specific version with `appraise 6.0 rake spec`. This is usually necessary because different versions have different Ruby version support.
+Test a specific version with `appraisal 6.0 rake spec`. This is usually necessary because different versions have different Ruby version support.
 
 To install this gem onto your local machine, run `bundle exec rake install`.
 
