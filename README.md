@@ -34,17 +34,9 @@ The best part is that PostgreSQL supports inserting new values at any point of t
 ALTER TYPE status_type ADD VALUE 'pending' BEFORE 'active';
 ```
 
-## Version support
-
-Every version of Rails with an `enum` macro is supported. This means 4.1 through master. Yes, this was annoying and difficult.
-
-The monkeypatches in this library are extremely narrow and contained; the dirty hacks I had to do to make 4.1 work, for instance, have no impact on 6.0.
-
-Monkeypatching Rails internals is **scary**. So this library has a comprehensive test suite that runs against every known minor version.
-
 ## schema.rb Support
 
-The principle motivation of this gem is to seamlessly integration PG enums into your `schema.rb` file. This means you can use them in your database columns without switching to `structure.sql`.
+The principle motivation of this gem is to seamlessly integrate PG enums into your `schema.rb` file. This means you can use them in your database columns without switching to `structure.sql`.
 
 ```ruby
 ActiveRecord::Schema.define(version: 2019_06_19_214914) do
@@ -60,6 +52,14 @@ ActiveRecord::Schema.define(version: 2019_06_19_214914) do
 
 end
 ```
+
+## Version support
+
+Every version of Rails with an `enum` macro is supported. This means 4.1 through master. Yes, this was annoying and difficult.
+
+The monkeypatches in this library are extremely narrow and contained; the dirty hacks I had to do to make 4.1 work, for instance, have no impact on 6.0.
+
+Monkeypatching Rails internals is **scary**. So this library has a comprehensive test suite that runs against every known minor version.
 
 ## Installation
 
