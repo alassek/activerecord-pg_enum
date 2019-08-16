@@ -13,6 +13,7 @@ task :connection do
 
   ActiveRecord::Base.establish_connection(
     adapter:  "postgresql",
+    port:     ENV.fetch("PGPORT", "5432"),
     username: ENV.fetch("TEST_USER") { ENV.fetch("USER", "pg_enum") },
     password: ENV["TEST_PASSWORD"]
   )
