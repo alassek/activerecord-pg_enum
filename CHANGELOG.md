@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.1] - 2019-08-16
+- Update Rails 6 support to 6.0-final
+
 ## [1.0.0] - 2019-06-23
 ### Added
 - Support for 4.1 and 4.2
