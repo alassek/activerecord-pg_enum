@@ -10,8 +10,18 @@ module MigrationHelpers
   # Rails 5.2 moved from a unary Migrator class to
   # MigrationContext, that can be scoped to a given
   # path.
+  #
+  # Rails 6.0 requires the schema migration object
+  # as an argument.
   def migration_context
-    ActiveRecord::MigrationContext.new(migration_path)
+    klass = ActiveRecord::MigrationContext
+
+    case klass.instance_method(:initialize).arity
+    when 1
+      klass.new(migration_path)
+    else
+      klass.new(migration_path, schema_migration)
+    end
   end
 
   def legacy_migrator
@@ -40,6 +50,16 @@ module MigrationHelpers
 
   def migration_path
     spec_root / "migrations"
+  end
+
+  def schema_migration
+    conn = ActiveRecord::Base.connection
+
+    if conn.respond_to?(:schema_migration)
+      conn.schema_migration
+    else
+      ActiveRecord::SchemaMigration
+    end
   end
 
   module ClassMethods
