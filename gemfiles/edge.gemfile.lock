@@ -66,7 +66,7 @@ GIT
 PATH
   remote: ..
   specs:
-    activerecord-pg_enum (1.0.0)
+    activerecord-pg_enum (1.0.1)
       activerecord (>= 4.1.0)
       activesupport
       pg
