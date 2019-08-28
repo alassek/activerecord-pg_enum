@@ -1,9 +1,5 @@
-require "active_support/lazy_load_hooks"
 require "active_record"
-
-ActiveSupport.on_load(:active_record) do
-  ActiveRecord::PGEnum.install Gem.loaded_specs["activerecord"].version
-end
+require "active_support/lazy_load_hooks"
 
 module ActiveRecord
   module PGEnum
@@ -55,6 +51,10 @@ module ActiveRecord
       end
     end
   end
+end
+
+ActiveSupport.on_load(:active_record) do
+  ActiveRecord::PGEnum.install Gem.loaded_specs["activerecord"].version
 end
 
 # Declare an enum attribute where the values map to strings enforced by PostgreSQL's
