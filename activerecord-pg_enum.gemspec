@@ -14,6 +14,13 @@ Gem::Specification.new do |spec|
   spec.homepage = "https://github.com/alassek/activerecord-pg_enum"
   spec.license  = "MIT"
 
+  spec.metadata = {
+    "bug_tracker_uri" => "https://github.com/alassek/activerecord-pg_enum/issues",
+    "changelog_uri"   => "https://github.com/alassek/activerecord-pg_enum/blob/master/CHANGELOG.md",
+    "pgp_keys_uri"    => "https://keybase.io/alassek/pgp_keys.asc",
+    "signatures_uri"  => "https://keybase.pub/alassek/gems/"
+  }
+
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
