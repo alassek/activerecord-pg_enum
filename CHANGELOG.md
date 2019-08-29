@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.2] - 2019-08-29
 - Move the active_record load hook to a different place to ensure things run in the correct order
 
 ## [1.0.1] - 2019-08-16
