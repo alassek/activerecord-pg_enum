@@ -3,7 +3,7 @@ require "spec_helper"
 RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
   with_migration :AddStatuses, 1, <<-EOF
     def up
-      create_enum "status_type", %w[active archived]
+      create_enum "status_type", ['active', 'archived', 'on hold']
     end
 
     def down
@@ -28,7 +28,7 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
       expect(subject.current_version).to eq 0
       expect { subject.up(1) }.to_not raise_error
       expect(subject.current_version).to eq 1
-      expect(connection.enum_types).to include("status_type" => %w[active archived])
+      expect(connection.enum_types).to include("status_type" => ['active', 'archived', 'on hold'])
     end
 
     it "creates a new enum", version: "< 5.2.0" do
@@ -36,7 +36,7 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
         expect(subject.current_version).to eq 0
         expect { subject.up(migration_path, 1) }.to_not raise_error
         expect(subject.current_version).to eq 1
-        expect(connection.enum_types).to include("status_type" => %w[active archived])
+        expect(connection.enum_types).to include("status_type" => ['active', 'archived', 'on hold'])
       end
     end
   end

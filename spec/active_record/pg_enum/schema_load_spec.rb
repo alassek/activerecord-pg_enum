@@ -18,7 +18,7 @@ RSpec.describe ActiveRecord::Tasks::DatabaseTasks do
 
       expect { db_tasks.load_schema(db_config, :ruby, schema_file) }.to_not raise_error
 
-      expect(connection.enum_types).to include({ "foo_type" => %w[bar baz] })
+      expect(connection.enum_types).to include({ "foo_type" => ['bar', 'baz', 'fizz buzz'] })
       expect(connection.data_sources).to include("test_table")
     end
   end
@@ -30,7 +30,7 @@ RSpec.describe ActiveRecord::Tasks::DatabaseTasks do
 
       expect { db_tasks.load_schema_for(db_config, :ruby, schema_file) }.to_not raise_error
 
-      expect(connection.enum_types).to include({ "foo_type" => %w[bar baz] })
+      expect(connection.enum_types).to include({ "foo_type" => ['bar', 'baz', 'fizz buzz'] })
       expect(connection.tables).to include("test_table")
     end
   end

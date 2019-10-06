@@ -14,7 +14,7 @@ module ActiveRecord
       #   { "foo_type" => ["foo", "bar", "baz"] }
       def enum_types
         res = exec_query(<<-SQL.strip_heredoc, "SCHEMA")
-          SELECT t.typname AS enum_name, string_agg(e.enumlabel, ' ' ORDER BY e.enumsortorder) AS enum_value
+          SELECT t.typname AS enum_name, string_agg(e.enumlabel, ', ' ORDER BY e.enumsortorder) AS enum_value
           FROM pg_type t
           JOIN pg_enum e ON t.oid = e.enumtypid
           JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
@@ -29,7 +29,7 @@ module ActiveRecord
         end
 
         res.inject({}) do |memo, (name, values)|
-          memo[name] = values.split(" ")
+          memo[name] = values.split(", ")
           memo
         end
       end

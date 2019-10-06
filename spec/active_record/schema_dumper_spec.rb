@@ -28,7 +28,7 @@ RSpec.describe "ActiveRecord::SchemaDumper" do
   end
 
   it "contains foo_type in the dump file" do
-    expect(subject.string).to include %Q{create_enum "foo_type", %w[bar baz]}
+    expect(subject.string).to include %Q{create_enum "foo_type", ["bar", "baz", "fizz buzz"]}
   end
 
   it "dumps the table definition" do

@@ -10,7 +10,7 @@ module ActiveRecord
       #
       # Example:
       #
-      #   create_enum("foo_type", "foo", "bar", "baz")
+      #   create_enum("foo_type", "foo", "bar", "baz", "foo bar")
       def create_enum(name, values)
         execute("CREATE TYPE #{name} AS ENUM (#{Array(values).map { |v| "'#{v}'" }.join(", ")})").tap {
           reload_type_map
