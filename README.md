@@ -133,6 +133,20 @@ class ContactInfo < ActiveRecord::Base
 end
 ```
 
+Additionally, `enum` options are fully supported, for example
+```ruby
+class User < ActiveRecord::Base
+  include PGEnum(status: %w[active inactive deleted], _prefix: 'user', _suffix: true)
+end
+```
+
+is equivalent to
+```ruby
+class User < ActiveRecord::Base
+  enum status: { active: 'active', inactive: 'inactive', deleted: 'deleted' }, _prefix: 'user', _suffix: true
+end
+```
+
 There's no technical reason why you couldn't detect enum columns at startup time and automatically do this wireup, but I feel that the benefit of self-documenting outweighs the convenience.
 
 ## Development
