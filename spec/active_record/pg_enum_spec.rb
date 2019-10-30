@@ -45,5 +45,15 @@ RSpec.describe ActiveRecord::PGEnum do
       expect(TestTable).to respond_to :foo_types
       expect(TestTable.foo_types).to match({ "bar" => "bar", "baz" => "baz" })
     end
+
+    it "passes any additional options to ::enum", version: ">= 5.0" do
+      expect(TestTable).to receive(:enum).with(foo_type: { bar: "bar", baz: "baz" }, _prefix: true, _suffix: 'fizz').and_call_original
+
+      TestTable.include PGEnum(foo_type: %i[bar baz], _prefix: true, _suffix: 'fizz')
+
+      expect(TestTable).to respond_to :foo_type_bar_fizz
+      expect(TestTable.new).to respond_to :foo_type_bar_fizz?
+      expect(TestTable.new).to respond_to :foo_type_baz_fizz!
+    end
   end
 end
