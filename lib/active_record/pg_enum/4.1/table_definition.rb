@@ -3,6 +3,7 @@ module ActiveRecord
     register :table_definition do
       require "active_record/connection_adapters/postgresql_adapter"
       ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::TableDefinition.include TableDefinition
+      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::Table.include TableDefinition
     end
 
     module TableDefinition

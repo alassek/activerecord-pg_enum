@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Fixed
 - Dump enums declared in non-public schemas
+- Fix missing `enum` method with using `change_table`
 
 ## [1.0.3] - 2019-10-13
 ### Fixed

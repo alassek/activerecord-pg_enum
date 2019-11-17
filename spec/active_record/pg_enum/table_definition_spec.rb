@@ -9,6 +9,14 @@ RSpec.describe ActiveRecord::PGEnum::TableDefinition do
     end
   EOF
 
+  with_migration "AddAnotherStatusToQuux", 2, <<-EOF
+    def change
+      change_table :quux do |t|
+        t.enum :another_status, as: "status_type"
+      end
+    end
+  EOF
+
   around :each do |example|
     ActiveRecord::SchemaMigration.drop_table
     execute "DROP TYPE IF EXISTS status_type"
@@ -29,24 +37,22 @@ RSpec.describe ActiveRecord::PGEnum::TableDefinition do
     subject { migration_context }
 
     it "understands enum as a column type" do
-      expect { subject.up(1) }.to_not raise_error
+      expect { subject.up(2) }.to_not raise_error
 
-      column = Quux.columns.detect { |col| col.name == "status" }
+      columns = Quux.columns.select { |col| col.sql_type == "status_type" }
 
-      expect(column).to_not be_nil
-      expect(column.sql_type).to eq "status_type"
+      expect(columns.map(&:name)).to match_array ["status", "another_status"]
     end
   end
 
   context "Migrator", version: "< 5.2.0" do
     it "understands enum as a column type" do
       legacy_migrator do |subject|
-        expect { subject.up(migration_path, 1) }.to_not raise_error
+        expect { subject.up(migration_path, 2) }.to_not raise_error
 
-        column = Quux.columns.detect { |col| col.name == "status" }
+        columns = Quux.columns.select { |col| col.sql_type == "status_type" }
 
-        expect(column).to_not be_nil
-        expect(column.sql_type).to eq "status_type"
+        expect(columns.map(&:name)).to match_array ["status", "another_status"]
       end
     end
   end
