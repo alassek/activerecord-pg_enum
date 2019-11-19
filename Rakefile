@@ -10,14 +10,8 @@ end
 
 task :connection do
   require "active_record"
-
-  ActiveRecord::Base.establish_connection(
-    adapter:  "postgresql",
-    host:     ENV.fetch("PGHOST", "localhost"),
-    port:     ENV.fetch("PGPORT", "5432"),
-    username: ENV.fetch("TEST_USER") { ENV.fetch("USER", "pg_enum") },
-    password: ENV["TEST_PASSWORD"]
-  )
+  require_relative "spec/support/connection_config"
+  ActiveRecord::Base.establish_connection(db_config.except(:database))
 end
 
 namespace :spec do
