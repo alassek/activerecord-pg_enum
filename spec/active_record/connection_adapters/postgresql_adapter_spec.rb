@@ -24,8 +24,13 @@ RSpec.describe "ActiveRecord::ConnectionAdapters::PostgreSQLAdapter" do
       execute "DROP SCHEMA custom_namespace"
     end
 
+    it "is looking at the expected schemas from search path" do
+      expect(connection.schema_search_path).to eq "public, custom_namespace"
+      expect(connection.select_values('select current_schemas(false)')).to eq ["{public,custom_namespace}"]
+    end
+
     it "lists types in alphabetical order" do
-      expect(subject.enum_types.keys).to eq %w[bar_type baz_type custom_namespace.status_type foo_bar_type quux_type]
+      expect(subject.enum_types.keys).to eq %w[bar_type baz_type foo_bar_type quux_type status_type]
     end
 
     it "deserializes the types correctly" do
