@@ -62,7 +62,7 @@ DEPENDENCIES
   activerecord (= 6.0.0)
   activerecord-pg_enum!
   appraisal
-  bundler (~> 1.15)
+  bundler (~> 1.17)
   pry
   rake (~> 10.0)
   rspec (~> 3.0)

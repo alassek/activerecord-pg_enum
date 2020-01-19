@@ -66,7 +66,7 @@ DEPENDENCIES
   activerecord (>= 4.1.0, < 4.2.0)
   activerecord-pg_enum!
   appraisal
-  bundler (~> 1.15)
+  bundler (~> 1.17)
   i18n (~> 0.7)
   pg (~> 0.15)
   pry
