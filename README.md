@@ -117,6 +117,36 @@ class AddStatusToOrder < ActiveRecord::Migration[5.2]
 end
 ```
 
+Renaming an enum type
+
+```ruby
+class RenameStatusType < ActiveRecord::Migration[6.0]
+  def change
+    rename_enum "status_type", to: "order_status_type"
+  end
+end
+```
+
+```SQL
+ALTER TYPE status_type RENAME TO order_status_type;
+```
+
+**PostgreSQL 10+ required**:
+
+Changing an enum label
+
+```ruby
+class ChangeStatusHoldLabel < ActiveRecord::Migration[6.0]
+  def change
+    rename_enum_value "status_type", from: "on hold", to: "OnHold"
+  end
+end
+```
+
+```SQL
+ALTER TYPE status_type RENAME VALUE 'on hold' TO 'OnHold';
+```
+
 ### Module Builder
 
 ```ruby

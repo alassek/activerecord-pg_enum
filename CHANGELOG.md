@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.1.0] - 2020-01-18
+### Added
+- `rename_enum` command for changing the type name
+- `rename_enum_value` command for changing an enum label (PostgreSQL 10+ only)
+
+### Changed
+- Refactored some code to eliminate deprecation warnings in 2.7 related to kwargs
+
 ## [1.0.5] - 2019-11-22
 ### Fixed
 - Don't include schema name in dumped enum types to be consistent with the way tables are dumped (@TylerRick)
