@@ -22,7 +22,7 @@ matrix:
 services:
 - postgresql
 addons:
-  postgresql: "9.6"
+  postgresql: "10"
 before_install: gem install bundler -v 1.17.3
 script: "bundle exec rake spec"
 env:

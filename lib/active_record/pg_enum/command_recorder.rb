@@ -34,10 +34,29 @@ module ActiveRecord
         record(:add_enum_value, args, &block)
       end
 
+      def rename_enum(name, to:)
+        record(:rename_enum, [name, to: to])
+      end
+
+      def rename_enum_value(type, from:, to:)
+        record(:rename_enum_value, [type, from: from, to: to])
+      end
+
       private
 
       def invert_create_enum(args)
         [:drop_enum, args]
+      end
+
+      def invert_rename_enum_value(args)
+        type, args = args
+        reversed   = %i[from to].zip(args.values_at(:to, :from))
+
+        [:rename_enum_value, [type, Hash[reversed]]]
+      end
+
+      def invert_rename_enum(args)
+        [:rename_enum, [args.last[:to], to: args.first]]
       end
 
       def invert_drop_enum(args)

@@ -24,6 +24,13 @@ module ActiveRecord
         }
       end
 
+      # Rename an existing ENUM type
+      def rename_enum(name, to:)
+        execute("ALTER TYPE #{name} RENAME TO #{to}").tap {
+          reload_type_map
+        }
+      end
+
       # Add a new value to an existing ENUM type.
       # Only one value at a time is supported by PostgreSQL.
       #
@@ -46,6 +53,23 @@ module ActiveRecord
         end
 
         execute(cmd).tap { reload_type_map }
+      end
+
+      # Change the label of an existing ENUM value
+      #
+      # Options:
+      #   from: The original label string
+      #   to:   The desired label string
+      #
+      # Example:
+      #
+      #   rename_enum_value "foo_type", from: "quux", to: "Quux"
+      #
+      # Note: This feature requires PostgreSQL 10 or later
+      def rename_enum_value(type, from:, to:)
+        execute("ALTER TYPE #{type} RENAME VALUE '#{from}' TO '#{to}'").tap {
+          reload_type_map
+        }
       end
     end
   end

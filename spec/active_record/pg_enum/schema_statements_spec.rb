@@ -64,4 +64,97 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
       end
     end
   end
+
+  context "rename_enum" do
+    with_migration :RenameStatusType, 2, <<-EOF
+      def change
+        rename_enum "status_type", to: "order_status_type"
+      end
+    EOF
+
+    before :each do
+      ActiveRecord::SchemaMigration.drop_table
+      execute "DROP TYPE IF EXISTS status_type"
+    end
+
+    after :each do
+      ActiveRecord::SchemaMigration.drop_table
+      execute "DROP TYPE IF EXISTS status_type"
+      execute "DROP TYPE IF EXISTS order_status_type"
+    end
+
+    let(:statuses) { ["active", "archived", "on hold"] }
+
+    it "renames an existing type", version: ">= 5.2.0" do
+      subject.up(1)
+      expect { subject.up(2) }.to change { connection.enum_types }.from("status_type" => statuses).to("order_status_type" => statuses)
+    end
+
+    it "renames an existing type", version: "< 5.2.0" do
+      legacy_migrator do |subject|
+        subject.up(migration_path, 1)
+        expect { subject.up(migration_path, 2) }.to change { connection.enum_types }.from("status_type" => statuses).to("order_status_type" => statuses)
+      end
+    end
+
+    it "is reversible", version: ">= 5.2.0" do
+      subject.up(2)
+      expect { subject.down(1) }.to_not raise_error
+      expect(connection.enum_types).to include("status_type")
+    end
+
+    it "is reversible", version: "< 5.2.0" do
+      legacy_migrator do |subject|
+        subject.up(migration_path, 2)
+        expect { subject.down(migration_path, 1) }.to_not raise_error
+        expect(connection.enum_types).to include("status_type")
+      end
+    end
+  end
+
+  context "rename_enum_value" do
+    with_migration :CamelizeStatuses, 2, <<-EOF
+      def change
+        rename_enum_value "status_type", from: "active", to: "Active"
+        rename_enum_value "status_type", from: "archived", to: "Archived"
+        rename_enum_value "status_type", from: "on hold", to: "OnHold"
+      end
+    EOF
+
+    before :each do
+      ActiveRecord::SchemaMigration.drop_table
+      execute "DROP TYPE IF EXISTS status_type"
+    end
+
+    after :each do
+      ActiveRecord::SchemaMigration.drop_table
+      execute "DROP TYPE IF EXISTS status_type"
+    end
+
+    it "changes ENUM labels", version: ">= 5.2.0" do
+      subject.up(1)
+      expect { subject.up(2) }.to change { connection.enum_types["status_type"] }.from(["active", "archived", "on hold"]).to(["Active", "Archived", "OnHold"])
+    end
+
+    it "changes ENUM labels", version: "< 5.2.0" do
+      legacy_migrator do |subject|
+        subject.up(migration_path, 1)
+        expect { subject.up(migration_path, 2) }.to change { connection.enum_types["status_type"] }.from(["active", "archived", "on hold"]).to(["Active", "Archived", "OnHold"])
+      end
+    end
+
+    it "is reversible", version: ">= 5.2.0" do
+      subject.up(2)
+      expect { subject.down(1) }.to_not raise_error
+      expect(connection.enum_types["status_type"]).to eq ["active", "archived", "on hold"]
+    end
+
+    it "is reversible", version: "< 5.2.0" do
+      legacy_migrator do |subject|
+        subject.up(migration_path, 2)
+        expect { subject.down(migration_path, 1) }.to_not raise_error
+        expect(connection.enum_types["status_type"]).to eq ["active", "archived", "on hold"]
+      end
+    end
+  end
 end
