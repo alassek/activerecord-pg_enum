@@ -25,7 +25,8 @@ module ActiveRecord
       end
 
       # Rename an existing ENUM type
-      def rename_enum(name, to:)
+      def rename_enum(name, options = {})
+        to = options.fetch(:to) { raise ArgumentError, ":to is required" }
         execute("ALTER TYPE #{name} RENAME TO #{to}").tap {
           reload_type_map
         }
@@ -41,7 +42,8 @@ module ActiveRecord
       # Example:
       #
       #   add_enum_value("foo_type", "quux", before: "bar")
-      def add_enum_value(type, value, before: nil, after: nil)
+      def add_enum_value(type, value, options = {})
+        before, after = options.values_at(:before, :after)
         cmd = "ALTER TYPE #{type} ADD VALUE '#{value}'"
 
         if before && after
@@ -66,7 +68,10 @@ module ActiveRecord
       #   rename_enum_value "foo_type", from: "quux", to: "Quux"
       #
       # Note: This feature requires PostgreSQL 10 or later
-      def rename_enum_value(type, from:, to:)
+      def rename_enum_value(type, options = {})
+        from = options.fetch(:from) { raise ArgumentError, ":from is required" }
+        to   = options.fetch(:to)   { raise ArgumentError, ":to is required" }
+
         execute("ALTER TYPE #{type} RENAME VALUE '#{from}' TO '#{to}'").tap {
           reload_type_map
         }

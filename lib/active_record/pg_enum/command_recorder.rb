@@ -34,12 +34,12 @@ module ActiveRecord
         record(:add_enum_value, args, &block)
       end
 
-      def rename_enum(name, to:)
-        record(:rename_enum, [name, to: to])
+      def rename_enum(name, options = {})
+        record(:rename_enum, [name, options])
       end
 
-      def rename_enum_value(type, from:, to:)
-        record(:rename_enum_value, [type, from: from, to: to])
+      def rename_enum_value(type, options = {})
+        record(:rename_enum_value, [type, options])
       end
 
       private
