@@ -107,6 +107,10 @@ end
 
 Adding an enum column to a table
 
+
+Adding an enum column to a table
+
+using `change_table` syntax
 ```ruby
 class AddStatusToOrder < ActiveRecord::Migration[5.2]
   def change
@@ -116,6 +120,17 @@ class AddStatusToOrder < ActiveRecord::Migration[5.2]
   end
 end
 ```
+
+using `add_column` syntax
+```ruby
+class AddStatusToOrder < ActiveRecord::Migration[5.2]
+  def change
+    add_column :orders, :status, :status_type, default: "new"
+  end
+end
+```
+
+
 
 Renaming an enum type
 
