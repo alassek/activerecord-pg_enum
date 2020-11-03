@@ -107,9 +107,6 @@ end
 
 Adding an enum column to a table
 
-
-Adding an enum column to a table
-
 using `change_table` syntax
 ```ruby
 class AddStatusToOrder < ActiveRecord::Migration[5.2]
