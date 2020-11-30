@@ -33,14 +33,24 @@ module ActiveRecord
         end
       end
 
+      # Helper method that returns only the values of a specific ENUM types.  Uses a WeakRef as a short lived
+      # cache to prevent hitting the database for every enum on startup.
+      #
+      # Returns an array of strings like ["foo", "bar", "baz"]
       def enum_values(type_name)
-        enum_types[type_name.to_sym]
+        @_cached_enum_types ||= WeakRef.new(enum_types)
+        @_cached_enum_types[type_name.to_sym]
       end
 
-      def postgres_enum(name, type_name = nil)
+      # Helper method to creates an ActiveRecord enum, inferring the values from the ENUM type specified.
+      #
+      # Can be called as `postgres_enum(:foo, :foo_type)` or can accept any arguments normally accepted
+      # by ActiveRecord enum for example `postgres_enum(:foo, :foo_type, _prefix: 'foobar', _suffix: true)`
+      #
+      def postgres_enum(name, type_name = nil, options = {})
         type_name ||= name
-        values = enum_values(type_name)
-        enum name.to_sym => values.zip(values).to_h
+        values = enum_values(type_name)s.map { |v| [v.to_sym, v.to_s] }.to_h
+        enum {name.to_sym => value}.merge(options)
       end
     end
 
