@@ -45,9 +45,9 @@ ActiveRecord::Schema.define(version: 2019_06_19_214914) do
   enable_extension "plpgsql"
 
   create_enum "status_type", %w[new pending active archived]
-  
-  create_table "orders", id: :serial, force: :cascade do |t|
-    t.enum "status", as: "status_type", default: "new"
+
+  create_table :orders, id: :serial, force: :cascade do |t|
+    t.enum :status, as: :status_type, default: :new
   end
 
 end
@@ -82,11 +82,11 @@ Defining a new ENUM
 ```ruby
 class AddContactMethodType < ActiveRecord::Migration[5.2]
   def up
-    create_enum "contact_method_type", %w[Email Phone]
+    create_enum :contact_method_type, %w[Email Phone]
   end
 
   def down
-    drop_enum "contact_method_type"
+    drop_enum :contact_method_type
   end
 end
 ```
@@ -111,7 +111,7 @@ Adding an enum column to a table
 class AddStatusToOrder < ActiveRecord::Migration[5.2]
   def change
     change_table :orders do |t|
-      t.enum :status, as: "status_type", default: "new"
+      t.enum :status, as: :status_type, default: 'new'
     end
   end
 end
@@ -122,7 +122,7 @@ Renaming an enum type
 ```ruby
 class RenameStatusType < ActiveRecord::Migration[6.0]
   def change
-    rename_enum "status_type", to: "order_status_type"
+    rename_enum :status_type, to: :order_status_type
   end
 end
 ```
@@ -138,7 +138,7 @@ Changing an enum label
 ```ruby
 class ChangeStatusHoldLabel < ActiveRecord::Migration[6.0]
   def change
-    rename_enum_value "status_type", from: "on hold", to: "OnHold"
+    rename_enum_value :status_type, from: 'on hold', to: 'OnHold'
   end
 end
 ```
@@ -149,6 +149,7 @@ ALTER TYPE status_type RENAME VALUE 'on hold' TO 'OnHold';
 
 ### Module Builder
 
+You can specify the values
 ```ruby
 class ContactInfo < ActiveRecord::Base
   include PGEnum(contact_method: %w[Email SMS Phone])
@@ -177,7 +178,21 @@ class User < ActiveRecord::Base
 end
 ```
 
-There's no technical reason why you couldn't detect enum columns at startup time and automatically do this wireup, but I feel that the benefit of self-documenting outweighs the convenience.
+Alternatively values can be infered from the enum values using the `postgres_enum` helper, which can be helpful for readability especially if the type contains a large number of values.
+
+For example:
+```ruby
+class ContactInfo < ActiveRecord::Base
+  postgres_enum :contact_method, :contact_method_type
+end
+```
+
+assuming `contact_info_type` constains `Email, SMS, Phone1`, this is equivelent to
+```ruby
+class ContactInfo < ActiveRecord::Base
+  enum contact_method: { Email: "Email", SMS: "SMS", Phone: "Phone" }
+end
+```
 
 ## Development
 
