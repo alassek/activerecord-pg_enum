@@ -23,12 +23,13 @@ module ActiveRecord
           project(pg_type[:typname], pg_enum[:enumlabel]).
           join(pg_enum).on(pg_enum[:enumtypid].eq(pg_type[:oid])).
           join(pg_namespace).on(pg_type[:typnamespace].eq(pg_namespace[:oid])).
-          where(pg_namespace[:nspname].eq(any_current_schema))
-        rows = ActiveRecord::Base.connection.select_rows(query)
+          where(pg_namespace[:nspname].eq(any_current_schema)).
+          order(pg_type[:typname], pg_enum[:enumsortorder])
+        rows = ActiveRecord::Base.connection.select_rows(query.to_sql)
 
         rows.reduce({}) do |accum, (type, value)|
-          accum[type.to_sym] ||= []
-          accum[type.to_sym] << value.to_s
+          accum[type.to_s] ||= []
+          accum[type.to_s] << value.to_s
           accum
         end
       end
@@ -39,18 +40,17 @@ module ActiveRecord
       # Returns an array of strings like ["foo", "bar", "baz"]
       def enum_values(type_name)
         @_cached_enum_types ||= WeakRef.new(enum_types)
-        @_cached_enum_types[type_name.to_sym]
+        @_cached_enum_types[type_name.to_s]
       end
 
       # Helper method to creates an ActiveRecord enum, inferring the values from the ENUM type specified.
       #
-      # Can be called as `postgres_enum(:foo, :foo_type)` or can accept any arguments normally accepted
-      # by ActiveRecord enum for example `postgres_enum(:foo, :foo_type, _prefix: 'foobar', _suffix: true)`
+      # Can be called as `postgres_enum(:foo, :foo_type)`
       #
-      def postgres_enum(name, type_name = nil, options = {})
+      def postgres_enum(name, type_name = nil)
         type_name ||= name
-        values = enum_values(type_name)s.map { |v| [v.to_sym, v.to_s] }.to_h
-        enum {name.to_sym => value}.merge(options)
+        values = enum_values(type_name)
+        enum name.to_sym => values.zip(values)
       end
     end
 
