@@ -36,6 +36,27 @@ module ActiveRecord
           .sort { |a, b| a.first <=> b.first }
           .each_with_object({}) { |(name, values), memo| memo[name] = deserialize.call(values) }
       end
+
+      # Helper method that returns only the values of a specific ENUM types.  Uses a WeakRef as a short lived
+      # cache to prevent hitting the database for every enum on startup.
+      #
+      # Returns an array of strings like ["foo", "bar", "baz"]
+      def enum_values(type_name)
+        @_cached_enum_types ||= WeakRef.new(enum_types)
+        @_cached_enum_types[type_name.to_s]
+      end
+
+      # Helper method to creates an ActiveRecord enum, inferring the values from the ENUM type specified.
+      #
+      # Can be called as `inferred_enum(:foo, :foo_type)` or can accept any arguments normally accepted
+      # by ActiveRecord enum for example `inferred_enum(:foo, :foo_type, _prefix: 'foobar', _suffix: true)`
+      #
+      def inferred_enum(name, type_name = nil)
+        type_name ||= name
+        values = enum_values(type_name)
+        enum name.to_sym => values.zip(values).to_h
+      end
+
     end
   end
 end

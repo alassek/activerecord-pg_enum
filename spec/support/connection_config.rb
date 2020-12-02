@@ -1,5 +1,5 @@
 def db_config
-  {
+  @db_config ||= {
     adapter: "postgresql",
     host:     ENV.fetch("PGHOST", "localhost"),
     port:     ENV.fetch("PGPORT", "5432"),

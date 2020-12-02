@@ -178,12 +178,12 @@ class User < ActiveRecord::Base
 end
 ```
 
-Alternatively values can be infered from the enum values using the `postgres_enum` helper, which can be helpful for readability especially if the type contains a large number of values.
+Alternatively values can be inferred from the enum values using the `inferred_enum` helper, which can be helpful for readability especially if the type contains a large number of values.
 
 For example:
 ```ruby
 class ContactInfo < ActiveRecord::Base
-  postgres_enum :contact_method, :contact_method_type
+  inferred_enum :contact_method, :contact_method_type
 end
 ```
 
@@ -196,7 +196,9 @@ end
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `appraisal rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. You will need a database user specified by the DB_USER (defaults to `pg_enum`) environment variable with CREATEDB permissions.
+
+Run `appraisal rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 Test a specific version with `appraisal 6.0 rake spec`. This is usually necessary because different versions have different Ruby version support.
 
