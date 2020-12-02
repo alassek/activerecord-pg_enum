@@ -11,7 +11,7 @@ end
 task :connection do
   require "active_record"
   require_relative "spec/support/connection_config"
-  ActiveRecord::Base.establish_connection(db_config.except(:database))
+  ActiveRecord::Base.establish_connection(db_config.merge(database: 'template1'))
 end
 
 namespace :spec do
@@ -20,14 +20,14 @@ namespace :spec do
   desc "Setup the Database for testing"
   task setup: [:connection] do
     ActiveRecord::Base.connection_pool.with_connection do |conn|
-      conn.create_database ENV.fetch("TEST_DATABASE", "pg_enum_test"), owner: ENV.fetch("TEST_USER") { ENV.fetch("USER", "pg_enum") }
+      conn.create_database db_config[:database], owner: db_config[:username]
     end
   end
 
   desc "Discard the test database"
   task teardown: [:connection] do
     ActiveRecord::Base.connection_pool.with_connection do |conn|
-      conn.drop_database ENV.fetch("TEST_DATABASE", "pg_enum_test")
+      conn.drop_database db_config[:database]
     end
   end
 end
