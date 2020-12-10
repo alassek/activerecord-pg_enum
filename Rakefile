@@ -30,6 +30,8 @@ namespace :spec do
       conn.drop_database ENV.fetch("TEST_DATABASE", "pg_enum_test")
     end
   end
+
+  task reset: [:teardown, :setup]
 end
 
 task spec: %w[spec:setup spec:run spec:teardown]
