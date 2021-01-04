@@ -15,7 +15,7 @@ module ActiveRecord
       #     t.enum :status, as: "status_type"
       #   end
       def enum(name, as:, **options)
-        column(name, as, options)
+        column(name, as, **options)
       end
     end
   end
