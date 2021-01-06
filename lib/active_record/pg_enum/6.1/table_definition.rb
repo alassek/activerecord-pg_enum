@@ -1,1 +1,1 @@
-require "active_record/pg_enum/4.2/table_definition"
+require "active_record/pg_enum/6.0/table_definition"
