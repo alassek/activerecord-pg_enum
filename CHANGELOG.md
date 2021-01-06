@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.2.1] - 2021-01-05
+### Fixed
+- Argument bug that surfaced in Ruby 3.0
+
 ## [1.2.0] - 2020-12-09
 ### Added
 - Support for 6.1
