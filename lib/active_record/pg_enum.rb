@@ -45,7 +45,7 @@ module ActiveRecord
       end
 
       def approximate_version(version)
-        segments = version.respond_to?(:canonical_segments) ? version.canonical_segments : version.segments
+        segments = version.respond_to?(:canonical_segments) ? version.canonical_segments.dup : version.segments
 
         segments.pop     while segments.any? { |s| String === s }
         segments.pop     while segments.size > 2
