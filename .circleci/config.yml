@@ -1,0 +1,83 @@
+version: 2.1
+
+jobs:
+  test:
+    parameters:
+      ruby_version:
+        type: string
+      rails_version:
+        type: string
+    docker:
+      - image: 'circleci/ruby:<< parameters.ruby_version >>'
+        auth:
+          username: alassek
+          password: $DOCKERHUB_TOKEN
+      - image: circleci/postgres:10
+        auth:
+          username: alassek
+          password: $DOCKERHUB_TOKEN
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ""
+          POSTGRES_HOST_AUTH_METHOD: trust
+    environment:
+      BUNDLER_VERSION: "1.17.3"
+      BUNDLE_GEMFILE: 'gemfiles/<< parameters.rails_version >>.gemfile'
+      BUNDLE_JOBS: "3"
+      BUNDLE_RETRY: "3"
+      PGHOST: 127.0.0.1
+      PGUSER: postgres
+      PGPASSWORD: ""
+      TEST_USER: postgres
+    steps:
+      - checkout
+      - run:
+          name: Generate checksums
+          command: |
+            mkdir -p tmp
+            shasum gemfiles/*.lock > tmp/checksum.txt
+      - restore_cache:
+          key: v1-gem-cache-{{ checksum "tmp/checksum.txt" }}
+      - run:
+          name: Install Dependencies
+          command: |
+            gem install bundler:$BUNDLER_VERSION
+            bundle check --path ./vendor/bundle || bundle install --deployment
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Run RSpec Tests
+          command: bundle exec rake spec
+
+workflows:
+  rails_4_1:
+    jobs:
+      - test:
+          ruby_version: "2.2.6"
+          rails_version: "4.1"
+  rails_4_2:
+    jobs:
+      - test:
+          ruby_version: "2.2.10"
+          rails_version: "4.2"
+  rails_5_0:
+    jobs:
+      - test:
+          ruby_version: "2.3.8"
+          rails_version: "5.0"
+  rails_5_1:
+    jobs:
+      - test:
+          ruby_version: "2.4.4"
+          rails_version: "5.1"
+  rails_6_0:
+    jobs:
+      - test:
+          ruby_version: "2.6.0"
+          rails_version: "6.0"
+  rails_6_1:
+    jobs:
+      - test:
+          ruby_version: "3.0.1"
+          rails_version: "6.1"
