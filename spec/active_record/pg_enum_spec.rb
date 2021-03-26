@@ -56,4 +56,10 @@ RSpec.describe ActiveRecord::PGEnum do
       expect(TestTable.new).to respond_to :foo_type_baz_fizz!
     end
   end
+
+  describe "KNOWN_VERSIONS" do
+    it "includes the current active_record version" do
+      expect(described_class::KNOWN_VERSIONS).to include ActiveRecord::PGEnum.detected_version
+    end
+  end
 end
