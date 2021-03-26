@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.2.2] - 2021-01-07
+### Fixed
+- Don't mutate `Gem::Version#canonical_segments` (@agrobbin)
+
+## [1.2.1] - 2021-01-05
+### Fixed
+- Argument bug that surfaced in Ruby 3.0
+
+## [1.2.0] - 2020-12-09
+### Added
+- Support for 6.1
+
 ## [1.1.0] - 2020-01-18
 ### Added
 - `rename_enum` command for changing the type name

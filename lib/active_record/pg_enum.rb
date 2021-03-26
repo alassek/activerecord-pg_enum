@@ -3,7 +3,7 @@ require "active_support/lazy_load_hooks"
 
 module ActiveRecord
   module PGEnum
-    KNOWN_VERSIONS = %w[4.1 4.2 5.0 5.1 5.2 6.0].map { |v| Gem::Version.new(v) }
+    KNOWN_VERSIONS = %w[4.1 4.2 5.0 5.1 5.2 6.0 6.1].map { |v| Gem::Version.new(v) }
 
     class << self
       attr_reader :enabled_version
@@ -25,6 +25,10 @@ module ActiveRecord
         monkeypatches[patch] = block
       end
 
+      def detected_version
+        approximate_version Gem.loaded_specs["activerecord"].version
+      end
+
       private
 
       def monkeypatches
@@ -41,7 +45,7 @@ module ActiveRecord
       end
 
       def approximate_version(version)
-        segments = version.respond_to?(:canonical_segments) ? version.canonical_segments : version.segments
+        segments = version.respond_to?(:canonical_segments) ? version.canonical_segments.dup : version.segments
 
         segments.pop     while segments.any? { |s| String === s }
         segments.pop     while segments.size > 2
