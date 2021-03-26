@@ -14,7 +14,6 @@ task :connection do
   require_relative "spec/support/connection_config"
 
   config = db_config_hash.except(:database)
-
   if ActiveRecord.constants.include?(:DatabaseConfigurations)
     config = ActiveRecord::DatabaseConfigurations::HashConfig.new("test", "primary", config)
   end
