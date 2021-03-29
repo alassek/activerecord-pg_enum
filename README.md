@@ -46,8 +46,8 @@ ActiveRecord::Schema.define(version: 2019_06_19_214914) do
 
   create_enum "status_type", %w[new pending active archived]
 
-  create_table :orders, id: :serial, force: :cascade do |t|
-    t.enum :status, as: :status_type, default: :new
+  create_table "orders", id: :serial, force: :cascade do |t|
+    t.enum "status", as: "status_type", default: "new"
   end
 
 end
@@ -82,11 +82,11 @@ Defining a new ENUM
 ```ruby
 class AddContactMethodType < ActiveRecord::Migration[5.2]
   def up
-    create_enum :contact_method_type, %w[Email Phone]
+    create_enum "contact_method_type", %w[Email Phone]
   end
 
   def down
-    drop_enum :contact_method_type
+    drop_enum "contact_method_type"
   end
 end
 ```
@@ -110,8 +110,8 @@ Adding an enum column to a table
 ```ruby
 class AddStatusToOrder < ActiveRecord::Migration[5.2]
   def change
-    change_table :orders do |t|
-      t.enum :status, as: :status_type, default: 'new'
+    change_table "orders" do |t|
+      t.enum "status", as: "status_type", default: "new"
     end
   end
 end
@@ -122,7 +122,7 @@ Renaming an enum type
 ```ruby
 class RenameStatusType < ActiveRecord::Migration[6.0]
   def change
-    rename_enum :status_type, to: :order_status_type
+    rename_enum "status_type", to: "order_status_type"
   end
 end
 ```
@@ -138,7 +138,7 @@ Changing an enum label
 ```ruby
 class ChangeStatusHoldLabel < ActiveRecord::Migration[6.0]
   def change
-    rename_enum_value :status_type, from: 'on hold', to: 'OnHold'
+    rename_enum_value :status_type, from: "on hold", to: "OnHold"
   end
 end
 ```
