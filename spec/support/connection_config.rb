@@ -16,7 +16,7 @@ def db_config
   @db_config ||= begin
     if VersionMatcher.new("activerecord").matches?("< 6.1")
       db_config_hash
-    else
+    else 
       require "active_record/database_configurations"
       ActiveRecord::DatabaseConfigurations::HashConfig.new("test", "primary", db_config_hash)
     end

@@ -14,6 +14,7 @@ task :connection do
   require_relative "spec/support/connection_config"
 
   config = db_config_hash.except(:database)
+
   if ActiveRecord.constants.include?(:DatabaseConfigurations)
     config = ActiveRecord::DatabaseConfigurations::HashConfig.new("test", "primary", config)
   end
@@ -26,17 +27,15 @@ namespace :spec do
 
   desc "Setup the Database for testing"
   task setup: [:connection] do
-    db_config = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env)
     ActiveRecord::Base.connection_pool.with_connection do |conn|
-      conn.create_database db_config[:database], owner: db_config[:username]
+      conn.create_database ENV.fetch("TEST_DATABASE", "pg_enum_test"), owner: ENV.fetch("TEST_USER") { ENV.fetch("USER", "pg_enum") }
     end
   end
 
   desc "Discard the test database"
   task teardown: [:connection] do
-    db_config = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env)
     ActiveRecord::Base.connection_pool.with_connection do |conn|
-      conn.drop_database db_config[:database]
+      conn.drop_database ENV.fetch("TEST_DATABASE", "pg_enum_test")
     end
   end
 
