@@ -110,8 +110,8 @@ Adding an enum column to a table
 ```ruby
 class AddStatusToOrder < ActiveRecord::Migration[5.2]
   def change
-    change_table "orders" do |t|
-      t.enum "status", as: "status_type", default: "new"
+    change_table :orders do |t|
+      t.enum :status, as: "status_type", default: "new"
     end
   end
 end
@@ -138,7 +138,7 @@ Changing an enum label
 ```ruby
 class ChangeStatusHoldLabel < ActiveRecord::Migration[6.0]
   def change
-    rename_enum_value :status_type, from: "on hold", to: "OnHold"
+    rename_enum_value "status_type", from: "on hold", to: "OnHold"
   end
 end
 ```
@@ -187,7 +187,7 @@ class ContactInfo < ActiveRecord::Base
 end
 ```
 
-assuming `contact_info_type` constains `Email, SMS, Phone1`, this is equivelent to
+assuming `contact_info_type` constains `Email, SMS, Phone`, this is equivelent to
 ```ruby
 class ContactInfo < ActiveRecord::Base
   enum contact_method: { Email: "Email", SMS: "SMS", Phone: "Phone" }
