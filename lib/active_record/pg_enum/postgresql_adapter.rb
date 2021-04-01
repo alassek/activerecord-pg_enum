@@ -41,20 +41,23 @@ module ActiveRecord
       # cache to prevent hitting the database for every enum on startup.
       #
       # Returns an array of strings like ["foo", "bar", "baz"]
-      def enum_values(type_name)
-        @_cached_enum_types ||= WeakRef.new(enum_types)
-        @_cached_enum_types[type_name.to_s]
+      def self.cached_enum_values
+        enum_types
       end
 
       # Helper method to creates an ActiveRecord enum, inferring the values from the ENUM type specified.
       #
-      # Can be called as `inferred_enum(:foo, :foo_type)` or can accept any arguments normally accepted
-      # by ActiveRecord enum for example `inferred_enum(:foo, :foo_type, _prefix: 'foobar', _suffix: true)`
+      # Can be called as `inferred_enum(foo: :foo_type)` or can accept any arguments normally accepted
+      # by ActiveRecord enum for example `inferred_enum(foo: :foo_type, _prefix: 'foobar', _suffix: true)`
       #
-      def inferred_enum(name, type_name = nil)
-        type_name ||= name
-        values = enum_values(type_name)
-        enum name.to_sym => values.zip(values).to_h
+      def inferred_enum(options)
+        raise ArgumentError('inferred_enum expects a hash argument') unless options.is_a?(Hash)
+
+        key, value = options.shift
+
+        enum_values = PostgreSQLEnum.cached_enum_types[value.to_s]
+        enum_value_hash = enum_values.zip(enum_values).to_h
+        enum({ key.to_sym => enum_value_hash, **options })
       end
 
     end
