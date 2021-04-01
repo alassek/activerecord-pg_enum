@@ -55,7 +55,7 @@ module ActiveRecord
 
         key, value = options.shift
 
-        enum_values = PostgreSQLEnum.cached_enum_types[value.to_s]
+        enum_values = PostgreSQLAdapter.cached_enum_types[value.to_s]
         enum_value_hash = enum_values.zip(enum_values).to_h
         enum({ key.to_sym => enum_value_hash, **options })
       end
