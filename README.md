@@ -91,10 +91,12 @@ class AddContactMethodType < ActiveRecord::Migration[5.2]
 end
 ```
 
-Adding a value to an existing ENUM
+Adding a value to an existing ENUM (you must disable the wrapping transaction)
 
 ```ruby
 class AddSMSToContactMethodType < ActiveRecord::Migration[5.2]
+  disable_ddl_transaction!
+
   def up
     add_enum_value "contact_method_type", "SMS", before: "Phone"
   end
