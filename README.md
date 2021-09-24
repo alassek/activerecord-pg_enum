@@ -91,7 +91,7 @@ class AddContactMethodType < ActiveRecord::Migration[5.2]
 end
 ```
 
-Adding a value to an existing ENUM (you must disable the wrapping transaction)
+Adding a value to an existing ENUM (you must disable the wrapping transaction on PostgreSQL versions older than 12)
 
 ```ruby
 class AddSMSToContactMethodType < ActiveRecord::Migration[5.2]
