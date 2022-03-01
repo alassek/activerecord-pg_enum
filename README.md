@@ -1,3 +1,5 @@
+# Note: Rails 7 supports Postgres enums natively ([more info](https://github.com/alassek/activerecord-pg_enum/issues/25))
+
 # ActiveRecord::PGEnum [![Build Status](https://circleci.com/gh/alassek/activerecord-pg_enum.svg?style=shield)](https://app.circleci.com/pipelines/github/alassek/activerecord-pg_enum)
 
 The `enum` feature in Rails has bad developer ergonomics. It uses integer types at the DB layer, which means trying to understand SQL output is a pain.
