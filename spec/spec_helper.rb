@@ -10,6 +10,7 @@ end
 require_relative "support/connection"
 require_relative "support/table_helpers"
 require_relative "support/rails_env"
+require_relative "support/connection_helpers"
 require_relative "support/migration_helpers"
 require_relative "support/version_matcher"
 require_relative "support/version_helper"
@@ -20,10 +21,6 @@ ActiveSupport.run_load_hooks(:active_record, ActiveRecord::Base)
 ActiveRecord::Migration.verbose = false
 
 RSpec.configure do |config|
-  config.include TableHelpers
-  config.include MigrationHelpers
-  config.include VersionHelper
-
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
 
@@ -50,4 +47,7 @@ RSpec.configure do |config|
   #   RSpec.describe "Subject", version: ">= 6.0.0"
   #   Will only run the spec if ActiveRecord is >= 6.0.0
   config.filter_run_excluding version: VersionMatcher.new("activerecord").to_proc
+
+  config.order = :random
+  Kernel.srand config.seed
 end

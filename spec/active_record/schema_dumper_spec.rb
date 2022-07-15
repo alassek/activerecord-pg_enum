@@ -1,12 +1,12 @@
 require "spec_helper"
 
-RSpec.describe "ActiveRecord::SchemaDumper" do
+RSpec.describe "ActiveRecord::SchemaDumper", version: "< 7.0" do
   let(:described_class) { ActiveRecord::SchemaDumper }
   let(:schema_file) { spec_root / "fixtures" / "schema.rb" }
 
   subject { StringIO.new }
 
-  around :each do |example|
+  before :each do
     version.when "< 5.0" do
       connection.execute "DROP TABLE IF EXISTS ar_internal_metadata"
       db_tasks.load_schema_for db_config, :ruby, schema_file
@@ -19,12 +19,8 @@ RSpec.describe "ActiveRecord::SchemaDumper" do
     described_class.dump(connection, subject)
     subject.rewind
 
-    begin
-      example.run
-    ensure
-      connection.execute "DROP TABLE IF EXISTS test_table"
-      connection.execute "DROP TYPE IF EXISTS foo_type"
-    end
+    connection.execute "DROP TABLE IF EXISTS test_table"
+    connection.execute "DROP TYPE IF EXISTS foo_type"
   end
 
   it "contains foo_type in the dump file" do

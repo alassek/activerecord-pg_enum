@@ -17,7 +17,7 @@ RSpec.describe "add_enum_value" do
   end
 
   def subject
-    connection.enum_types["another_test_type"]
+    enum_types["another_test_type"]
   end
 
   it { is_expected.to eq %w[foo bar] }
@@ -57,7 +57,7 @@ RSpec.describe "add_enum_value" do
     end
 
     def definition
-      connection.enum_types["another_test_type"]
+      enum_types["another_test_type"]
     end
 
     context ">= 5.2.0", version: ">= 5.2.0" do

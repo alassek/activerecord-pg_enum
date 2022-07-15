@@ -19,7 +19,11 @@ ActiveRecord::Schema.define(version: 1) do
   create_enum "foo_type", ['bar', 'baz', 'fizz buzz']
 
   create_table "test_table", id: :serial, force: :cascade do |t|
-    t.enum "foo", as: "foo_type", null: false
+    if Gem.loaded_specs['activerecord'].version < Gem::Version.new('7.0')
+      t.enum "foo", as: "foo_type", null: false
+    else
+      t.enum "foo", enum_type: "foo_type", null: false
+    end
   end
 
 end
