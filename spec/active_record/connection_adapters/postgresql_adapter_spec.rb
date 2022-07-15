@@ -30,11 +30,11 @@ RSpec.describe "ActiveRecord::ConnectionAdapters::PostgreSQLAdapter" do
     end
 
     it "lists types in alphabetical order" do
-      expect(subject.enum_types.keys).to eq %w[bar_type baz_type foo_bar_type quux_type status_type]
+      expect(enum_types.keys).to eq %w[bar_type baz_type foo_bar_type quux_type status_type]
     end
 
     it "deserializes the types correctly" do
-      expect(subject.enum_types.values).to match_array [['quux'], ['baz'], ['new', 'pending', 'active', 'archived'], ['bar'], ['foo bar']]
+      expect(enum_types.values).to match_array [['quux'], ['baz'], ['new', 'pending', 'active', 'archived'], ['bar'], ['foo bar']]
     end
   end
 end

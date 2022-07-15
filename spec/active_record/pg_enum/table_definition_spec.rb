@@ -1,6 +1,6 @@
 require "spec_helper"
 
-RSpec.describe ActiveRecord::PGEnum::TableDefinition do
+RSpec.describe "TableDefinition" do
   with_migration "AddStatusToQuux", 1, <<-EOF
     def change
       create_table :quux do |t|
@@ -33,7 +33,7 @@ RSpec.describe ActiveRecord::PGEnum::TableDefinition do
     self.table_name = "quux"
   end
 
-  context "MigrationContext", version: ">= 5.2.0" do
+  context "MigrationContext", version: ">= 5.2.0, < 7.0" do
     subject { migration_context }
 
     it "understands enum as a column type" do

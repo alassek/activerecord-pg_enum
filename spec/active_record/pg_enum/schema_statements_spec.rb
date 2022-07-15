@@ -28,7 +28,7 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
       expect(subject.current_version).to eq 0
       expect { subject.up(1) }.to_not raise_error
       expect(subject.current_version).to eq 1
-      expect(connection.enum_types).to include("status_type" => ['active', 'archived', 'on hold'])
+      expect(enum_types).to include("status_type" => ['active', 'archived', 'on hold'])
     end
 
     it "creates a new enum", version: "< 5.2.0" do
@@ -36,7 +36,7 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
         expect(subject.current_version).to eq 0
         expect { subject.up(migration_path, 1) }.to_not raise_error
         expect(subject.current_version).to eq 1
-        expect(connection.enum_types).to include("status_type" => ['active', 'archived', 'on hold'])
+        expect(enum_types).to include("status_type" => ['active', 'archived', 'on hold'])
       end
     end
   end
@@ -52,7 +52,7 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
       expect(subject.current_version).to eq 1
       expect { subject.down(0) }.to_not raise_error
       expect(subject.current_version).to eq 0
-      expect(connection.enum_types).to_not include("status_type" => %w[active archived])
+      expect(enum_types).to_not include("status_type" => %w[active archived])
     end
 
     it "drops the enum type", version: "< 5.2.0" do
@@ -60,7 +60,7 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
         expect(subject.current_version).to eq 1
         expect { subject.down(migration_path, 0) }.to_not raise_error
         expect(subject.current_version).to eq 0
-        expect(connection.enum_types).to_not include("status_type" => %w[active archived])
+        expect(enum_types).to_not include("status_type" => %w[active archived])
       end
     end
   end
@@ -87,27 +87,27 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
 
     it "renames an existing type", version: ">= 5.2.0" do
       subject.up(1)
-      expect { subject.up(2) }.to change { connection.enum_types }.from("status_type" => statuses).to("order_status_type" => statuses)
+      expect { subject.up(2) }.to change { enum_types }.from("status_type" => statuses).to("order_status_type" => statuses)
     end
 
     it "renames an existing type", version: "< 5.2.0" do
       legacy_migrator do |subject|
         subject.up(migration_path, 1)
-        expect { subject.up(migration_path, 2) }.to change { connection.enum_types }.from("status_type" => statuses).to("order_status_type" => statuses)
+        expect { subject.up(migration_path, 2) }.to change { enum_types }.from("status_type" => statuses).to("order_status_type" => statuses)
       end
     end
 
     it "is reversible", version: ">= 5.2.0" do
       subject.up(2)
       expect { subject.down(1) }.to_not raise_error
-      expect(connection.enum_types).to include("status_type")
+      expect(enum_types).to include("status_type")
     end
 
     it "is reversible", version: "< 5.2.0" do
       legacy_migrator do |subject|
         subject.up(migration_path, 2)
         expect { subject.down(migration_path, 1) }.to_not raise_error
-        expect(connection.enum_types).to include("status_type")
+        expect(enum_types).to include("status_type")
       end
     end
   end
@@ -133,27 +133,27 @@ RSpec.describe ActiveRecord::PGEnum::SchemaStatements do
 
     it "changes ENUM labels", version: ">= 5.2.0" do
       subject.up(1)
-      expect { subject.up(2) }.to change { connection.enum_types["status_type"] }.from(["active", "archived", "on hold"]).to(["Active", "Archived", "OnHold"])
+      expect { subject.up(2) }.to change { enum_types["status_type"] }.from(["active", "archived", "on hold"]).to(["Active", "Archived", "OnHold"])
     end
 
     it "changes ENUM labels", version: "< 5.2.0" do
       legacy_migrator do |subject|
         subject.up(migration_path, 1)
-        expect { subject.up(migration_path, 2) }.to change { connection.enum_types["status_type"] }.from(["active", "archived", "on hold"]).to(["Active", "Archived", "OnHold"])
+        expect { subject.up(migration_path, 2) }.to change { enum_types["status_type"] }.from(["active", "archived", "on hold"]).to(["Active", "Archived", "OnHold"])
       end
     end
 
     it "is reversible", version: ">= 5.2.0" do
       subject.up(2)
       expect { subject.down(1) }.to_not raise_error
-      expect(connection.enum_types["status_type"]).to eq ["active", "archived", "on hold"]
+      expect(enum_types["status_type"]).to eq ["active", "archived", "on hold"]
     end
 
     it "is reversible", version: "< 5.2.0" do
       legacy_migrator do |subject|
         subject.up(migration_path, 2)
         expect { subject.down(migration_path, 1) }.to_not raise_error
-        expect(connection.enum_types["status_type"]).to eq ["active", "archived", "on hold"]
+        expect(enum_types["status_type"]).to eq ["active", "archived", "on hold"]
       end
     end
   end

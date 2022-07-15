@@ -3,12 +3,12 @@ version: 2.1
 jobs:
   test:
     parameters:
-      ruby_version:
+      image:
         type: string
-      rails_version:
+      gemfile:
         type: string
     docker:
-      - image: 'circleci/ruby:<< parameters.ruby_version >>'
+      - image: '<< parameters.image >>'
         auth:
           username: alassek
           password: $DOCKERHUB_TOKEN
@@ -22,7 +22,7 @@ jobs:
           POSTGRES_HOST_AUTH_METHOD: trust
     environment:
       BUNDLER_VERSION: "1.17.3"
-      BUNDLE_GEMFILE: 'gemfiles/<< parameters.rails_version >>.gemfile'
+      BUNDLE_GEMFILE: '<< parameters.gemfile >>'
       BUNDLE_JOBS: "3"
       BUNDLE_RETRY: "3"
       PGHOST: 127.0.0.1
@@ -55,35 +55,41 @@ workflows:
     jobs:
       - test:
           name: Rails 4.1
-          ruby_version: "2.2.6"
-          rails_version: "4.1"
+          image: 'circleci/ruby:2.2.6'
+          gemfile: 'gemfiles/4.1.gemfile'
   rails_4_2:
     jobs:
       - test:
           name: Rails 4.2
-          ruby_version: "2.2.10"
-          rails_version: "4.2"
+          image: 'circleci/ruby:2.2.10'
+          gemfile: 'gemfiles/4.2.gemfile'
   rails_5_0:
     jobs:
       - test:
           name: Rails 5.0
-          ruby_version: "2.3.8"
-          rails_version: "5.0"
+          image: 'circleci/ruby:2.3.8'
+          gemfile: 'gemfiles/5.0.gemfile'
   rails_5_1:
     jobs:
       - test:
           name: Rails 5.1
-          ruby_version: "2.4.4"
-          rails_version: "5.1"
+          image: 'circleci/ruby:2.4.4'
+          gemfile: 'gemfiles/5.1.gemfile'
   rails_6_0:
     jobs:
       - test:
           name: Rails 6.0
-          ruby_version: "2.6.0"
-          rails_version: "6.0"
+          image: 'circleci/ruby:2.6.0'
+          gemfile: 'gemfiles/6.0.gemfile'
   rails_6_1:
     jobs:
       - test:
           name: Rails 6.1
-          ruby_version: "3.0.1"
-          rails_version: "6.1"
+          image: 'circleci/ruby:3.0.1'
+          gemfile: 'gemfiles/6.1.gemfile'
+  rails_7_0:
+    jobs:
+      - test:
+          name: Rails 7.0
+          image: 'cimg/ruby:2.7.6'
+          gemfile: 'gemfiles/7.0.gemfile'

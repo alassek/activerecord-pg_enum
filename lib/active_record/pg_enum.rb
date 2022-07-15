@@ -3,7 +3,7 @@ require "active_support/lazy_load_hooks"
 
 module ActiveRecord
   module PGEnum
-    KNOWN_VERSIONS = %w[4.1 4.2 5.0 5.1 5.2 6.0 6.1].map { |v| Gem::Version.new(v) }
+    KNOWN_VERSIONS = %w[4.1 4.2 5.0 5.1 5.2 6.0 6.1 7.0].map { |v| Gem::Version.new(v) }
 
     class << self
       attr_reader :enabled_version
@@ -37,7 +37,6 @@ module ActiveRecord
 
       def initialize!
         require "active_record/pg_enum/command_recorder"
-        require "active_record/pg_enum/postgresql_adapter"
         require "active_record/pg_enum/schema_statements"
 
         Dir[File.join(__dir__, "pg_enum", enabled_version.to_s, "*.rb")].each { |file| require file }

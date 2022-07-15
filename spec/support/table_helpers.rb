@@ -18,3 +18,7 @@ module TableHelpers
 
   delegate :execute, to: :connection
 end
+
+RSpec.configure do |config|
+  config.include TableHelpers
+end
