@@ -1,6 +1,7 @@
-# Note: Rails 7 supports Postgres enums natively ([more info](https://github.com/alassek/activerecord-pg_enum/issues/25))
-
 # ActiveRecord::PGEnum [![Build Status](https://circleci.com/gh/alassek/activerecord-pg_enum.svg?style=shield)](https://app.circleci.com/pipelines/github/alassek/activerecord-pg_enum)
+
+**Note**: This was originally written before Rails added support for native enums. See the comments in [version
+support](#version-support).
 
 The `enum` feature in Rails has bad developer ergonomics. It uses integer types at the DB layer, which means trying to understand SQL output is a pain.
 
@@ -62,6 +63,9 @@ Every version of Rails with an `enum` macro is supported. This means 4.1 through
 The monkeypatches in this library are extremely narrow and contained; the dirty hacks I had to do to make 4.1 work, for instance, have no impact on 6.0.
 
 Monkeypatching Rails internals is **scary**. So this library has a comprehensive test suite that runs against every known minor version.
+
+Rails 7 added support for native enums, but they have so far neglected to support altering or dropping enums in the API,
+so this gem remains to fill in the gaps. I expect to slowly deprecate this over time.
 
 ## Installation
 

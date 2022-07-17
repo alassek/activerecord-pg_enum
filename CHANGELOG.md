@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.0] - 2022-07-17
+### Added
+- Support for 7.0
+
+### Changed
+- ActiveRecord added `enum_types` interface so monkeypatch has been removed. **Note:** output format has changed.
+- `create_enum` uses framework interface, replacing `:as` kwarg with `:enum_type`
+
 ## [1.2.2] - 2021-01-07
 ### Fixed
 - Don't mutate `Gem::Version#canonical_segments` (@agrobbin)
